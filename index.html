@@ -1,0 +1,408 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Saraaa ❤️ — For You</title>
+  <style>
+    :root{--bg:#fffbfe;--card:#fff;--muted:#9b9b9b;--accent:#ff7aa2;--soft:#fff1f6;--radius:14px;--pad:14px;--max-w:780px;--shadow:0 6px 18px rgba(8,8,10,0.06);--font:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{font-family:var(--font);background:linear-gradient(180deg,#fff 0%,#fff6fb 100%);margin:0;color:#222;display:flex;justify-content:center}
+    .wrap{width:100%;max-width:var(--max-w);padding:18px}
+    header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    header h1{font-size:20px;margin:0}
+    .nav{display:flex;gap:8px;flex-wrap:wrap}
+    .nav button{background:transparent;border:1px solid rgba(0,0,0,0.06);padding:8px 12px;border-radius:12px;font-weight:600}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:var(--pad);margin-bottom:12px}
+    .pages{display:none}
+    .pages.open{display:block}
+    #game-area{display:block}
+    .game-grid{display:grid;gap:6px}
+    .db-board{touch-action:none}
+    .db-row{display:flex;gap:6px}
+    .dot{width:12px;height:12px;border-radius:50%;background:#333}
+    .edge{flex:1;height:28px;display:flex;align-items:center;justify-content:center}
+    .edge button{width:100%;height:100%;background:transparent;border-radius:8px;border:2px dashed rgba(0,0,0,0.04)}
+    .edge.h{height:28px}
+    .edge.v{width:28px;height:56px}
+    .box{width:100%;height:56px;display:flex;align-items:center;justify-content:center}
+    .box.owned{background:linear-gradient(90deg,rgba(255,122,162,0.08),rgba(255,192,214,0.06));border-radius:8px}
+    .status{display:flex;gap:8px;align-items:center}
+    .puzzle{display:flex;flex-direction:column;gap:10px;align-items:center}
+    .puzzle-board{width:100%;max-width:360px;aspect-ratio:9/16;background:#eee;border-radius:12px;display:grid;overflow:hidden}
+    .puzzle-tile{display:flex;align-items:center;justify-content:center;touch-action:none}
+    .puzzle-controls{display:flex;gap:8px}
+    .reaction{height:160px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+    .track{width:100%;max-width:420px;height:48px;background:#fff;border-radius:36px;position:relative;box-shadow:var(--shadow);overflow:hidden}
+    .heart{position:absolute;top:50%;transform:translateY(-50%);font-size:28px;user-select:none}
+    .notepad textarea{width:100%;min-height:220px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);padding:12px;font-size:15px}
+    .btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:none;font-weight:700}
+    .timeline{display:flex;flex-direction:column;gap:12px}
+    .memory{display:flex;gap:10px;align-items:flex-start}
+    .memory img{width:120px;height:213px;object-fit:cover;border-radius:12px}
+    .add-memory{display:flex;gap:8px;align-items:center}
+    @media (max-width:480px){header h1{font-size:18px}.puzzle-board{max-width:320px}.memory img{width:96px;height:170px}}
+    /* modal styling for winner */
+    .winner-modal{position:fixed;left:50%;top:20%;transform:translateX(-50%);z-index:9999;max-width:92%;padding:14px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.15);background:var(--card)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- If you want to HIDE the game entirely, add this ONE LINE (HTML comment) anywhere in the top-level of this file: -->
+    <!-- HIDE_GAME --><header>
+  <div style="font-size:28px">Saraaa ❤️</div>
+  <div style="flex:1"></div>
+  <nav class="nav">
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('page1')">Gallery</button>
+    <button onclick="showSection('page2')">Lovely Games</button>
+    <button onclick="showSection('page3')">Notepad</button>
+    <button onclick="showSection('page4')">Memory Lane</button>
+  </nav>
+</header>
+
+<main>
+  <div id="game-area" class="card" aria-live="polite"></div>
+
+  <div id="pages" class="pages">
+    <section id="page1" class="card" style="display:none">
+      <h2>Gallery & Messages</h2>
+      <div id="gallery"></div>
+      <p style="color:var(--muted)">Images must be placed in a local <code>/images/</code> folder. Example filenames used in code: <code>img1.jpg</code>, <code>img2.jpg</code>, <code>img3.jpg</code>.</p>
+    </section>
+
+    <section id="page2" class="card" style="display:none">
+      <h2>Lovely Games</h2>
+      <div id="lovely-games"></div>
+    </section>
+
+    <section id="page3" class="card" style="display:none">
+      <h2>Write a message for me</h2>
+      <div class="notepad">
+        <textarea id="noteText" placeholder="Write your beautiful message... (scrolls if long)"></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn" onclick="downloadNote()">Download Message</button>
+          <button onclick="document.getElementById('noteText').value='';" style="padding:10px;border-radius:10px">Clear</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="page4" class="card" style="display:none">
+      <h2>Memory Lane</h2>
+      <div class="timeline" id="timeline"></div>
+      <hr/>
+      <div class="add-memory">
+        <input id="mem-img" placeholder="Image path (e.g. /images/img4.jpg)" style="flex:1;padding:8px;border-radius:10px;border:1px solid rgba(0,0,0,0.06)" />
+        <input id="mem-caption" placeholder="Short caption" style="flex:1;padding:8px;border-radius:10px;border:1px solid rgba(0,0,0,0.06)" />
+        <button class="btn" onclick="addMemory()">Add</button>
+      </div>
+      <p style="color:var(--muted);margin-top:8px">Tip: Use your 9:16 images so they look perfect in the timeline.</p>
+    </section>
+  </div>
+
+</main>
+
+<footer style="text-align:center;color:var(--muted);font-size:13px;margin-top:8px">Made with ♥ for Saraaa</footer>
+
+  </div>  <script>
+    /*************************************************************************
+     * Configuration
+     *************************************************************************/
+    const CHANCE_TO_MISTAKE = 0.35; // change to tune AI
+    const WINS_TO_UNLOCK = 3;
+    const GAME_COMMENT_TOKEN = 'HIDE_GAME';
+    const gameHiddenByComment = document.documentElement.innerHTML.includes(GAME_COMMENT_TOKEN);
+
+    /*************************************************************************
+     * State
+     *************************************************************************/
+    let consecutiveWins = 0;
+    let unlocked = false;
+
+    function showSection(id){
+      if(id === 'home'){
+        document.getElementById('game-area').scrollIntoView({behavior:'smooth'});
+      }
+      const pages = ['page1','page2','page3','page4'];
+      pages.forEach(p=>{
+        const el = document.getElementById(p);
+        if(!el) return;
+        el.style.display = (p===id && unlocked)?'block':'none';
+      });
+      if(unlocked) document.getElementById('pages').classList.add('open');
+    }
+
+    /*************************************************************************
+     * Gallery
+     *************************************************************************/
+    const galleryImages = ['/images/img1.jpg','/images/img2.jpg','/images/img3.jpg'];
+    function renderGallery(){
+      const container = document.getElementById('gallery'); container.innerHTML='';
+      galleryImages.forEach((src,i)=>{
+        const card = document.createElement('div'); card.className='card'; card.style.display='flex'; card.style.flexDirection='column'; card.style.gap='8px';
+        const img = document.createElement('img'); img.src = src; img.alt = 'photo '+(i+1); img.style.width='100%'; img.style.aspectRatio='9/16'; img.style.objectFit='cover'; img.style.borderRadius='12px';
+        const msg = document.createElement('div'); msg.style.maxHeight='120px'; msg.style.overflow='auto'; msg.style.padding='8px'; msg.innerText = (i===0)?'My favourite memory with you.' : (i===1)?'You make every day brighter.' : 'You + me = ❤️';
+        card.appendChild(img); card.appendChild(msg); container.appendChild(card);
+      });
+    }
+
+    /*************************************************************************
+     * Lovely Games: Jigsaw + Reaction
+     *************************************************************************/
+    function renderLovelyGames(){
+      const container = document.getElementById('lovely-games'); container.innerHTML='';
+      // Jigsaw
+      const puzzleWrap = document.createElement('div'); puzzleWrap.className='card puzzle'; puzzleWrap.innerHTML = `<h3>Mini Jigsaw (Photo Puzzle)</h3>`;
+      const board = document.createElement('div'); board.className='puzzle-board'; puzzleWrap.appendChild(board);
+      const controls = document.createElement('div'); controls.className='puzzle-controls';
+      const shuffleBtn = document.createElement('button'); shuffleBtn.className='btn'; shuffleBtn.innerText='Shuffle'; controls.appendChild(shuffleBtn);
+      puzzleWrap.appendChild(controls); container.appendChild(puzzleWrap);
+
+      const PUZZLE_ROWS = 3, PUZZLE_COLS = 3; let puzzleState = []; let puzzleImg = galleryImages[0] || '/images/img1.jpg';
+
+      function createPuzzle(imgSrc){
+        puzzleImg = imgSrc;
+        board.style.gridTemplateColumns = `repeat(${PUZZLE_COLS},1fr)`;
+        board.innerHTML='';
+        puzzleState = [...Array(PUZZLE_ROWS*PUZZLE_COLS).keys()];
+        puzzleState.forEach((n,i)=>{
+          const tile = document.createElement('div'); tile.className='puzzle-tile'; tile.dataset.index = i; tile.style.border='0'; tile.style.minHeight='0'; tile.style.display='flex'; tile.style.alignItems='center'; tile.style.justifyContent='center';
+          if(n===0){ tile.style.background='#ffffff00'; tile.innerHTML=''; }
+          else{
+            const piece = document.createElement('div'); piece.style.width='100%'; piece.style.height='100%';
+            piece.style.backgroundImage = `url(${imgSrc})`;
+            const r = Math.floor((n-1)/PUZZLE_COLS); const c = (n-1)%PUZZLE_COLS;
+            piece.style.backgroundSize = `${PUZZLE_COLS*100}% ${PUZZLE_ROWS*100}%`;
+            piece.style.backgroundPosition = `${(c)*100/(PUZZLE_COLS-1)}% ${(r)*100/(PUZZLE_ROWS-1)}%`;
+            piece.style.objectFit='cover'; piece.style.width='100%'; piece.style.height='100%';
+            tile.appendChild(piece);
+          }
+          tile.style.cursor='pointer'; tile.style.aspectRatio='1/1'; tile.style.overflow='hidden';
+          tile.addEventListener('click',()=>{ tryMove(parseInt(tile.dataset.index)); });
+          board.appendChild(tile);
+        });
+      }
+
+      function tryMove(idx){
+        const blank = puzzleState.indexOf(0);
+        const r1 = Math.floor(blank/PUZZLE_COLS), c1 = blank%PUZZLE_COLS;
+        const r2 = Math.floor(idx/PUZZLE_COLS), c2 = idx%PUZZLE_COLS;
+        if(Math.abs(r1-r2)+Math.abs(c1-c2)===1){
+          [puzzleState[blank], puzzleState[idx]] = [puzzleState[idx], puzzleState[blank]];
+          refreshPuzzle();
+          if(isSolved()) showWinner('Puzzle solved! You completed the picture ❤️');
+        }
+      }
+
+      function refreshPuzzle(){
+        const tiles = board.querySelectorAll('.puzzle-tile');
+        tiles.forEach((tile,i)=>{
+          tile.innerHTML='';
+          const n = puzzleState[i];
+          if(n!==0){
+            const piece = document.createElement('div'); piece.style.width='100%'; piece.style.height='100%';
+            piece.style.backgroundImage = `url(${puzzleImg})`;
+            const r = Math.floor((n-1)/PUZZLE_COLS); const c = (n-1)%PUZZLE_COLS;
+            piece.style.backgroundSize = `${PUZZLE_COLS*100}% ${PUZZLE_ROWS*100}%`;
+            piece.style.backgroundPosition = `${(c)*100/(PUZZLE_COLS-1)}% ${(r)*100/(PUZZLE_ROWS-1)}%`;
+            tile.appendChild(piece);
+          }
+        });
+      }
+
+      function shuffle(){
+        let moves = 100;
+        for(let i=0;i<moves;i++){
+          const blank = puzzleState.indexOf(0);
+          const r = Math.floor(blank/PUZZLE_COLS), c = blank%PUZZLE_COLS;
+          const candidates = [];
+          if(r>0) candidates.push(blank-PUZZLE_COLS);
+          if(r<PUZZLE_ROWS-1) candidates.push(blank+PUZZLE_COLS);
+          if(c>0) candidates.push(blank-1);
+          if(c<PUZZLE_COLS-1) candidates.push(blank+1);
+          const choice = candidates[Math.floor(Math.random()*candidates.length)];
+          [puzzleState[blank], puzzleState[choice]] = [puzzleState[choice], puzzleState[blank]];
+        }
+        refreshPuzzle();
+      }
+
+      function isSolved(){ for(let i=0;i<puzzleState.length;i++) if(puzzleState[i] !== i) return false; return true; }
+
+      createPuzzle(puzzleImg);
+      shuffleBtn.addEventListener('click',shuffle);
+      shuffle();
+
+      // Reaction Heart
+      const reactionWrap = document.createElement('div'); reactionWrap.className='card reaction'; reactionWrap.innerHTML = `<h3>Reaction Heart (Tap Timing)</h3>`;
+      const track = document.createElement('div'); track.className='track';
+      const heart = document.createElement('div'); heart.className='heart'; heart.innerText='❤️'; heart.style.left='0px';
+      track.appendChild(heart); reactionWrap.appendChild(track);
+      const btn = document.createElement('button'); btn.className='btn'; btn.innerText='Tap when the heart is inside the golden zone'; reactionWrap.appendChild(btn);
+      container.appendChild(reactionWrap);
+
+      let animId=null; let pos=0; let dir=1; let speed=2; let running=true;
+      const goldenLeft = 35; const goldenRight = 65; // percent
+
+      function startAnim(){ running=true; function frame(){ if(!running) return; pos += dir*speed; if(pos>100){pos=100;dir=-1}else if(pos<0){pos=0;dir=1} heart.style.left = `calc(${pos}% - 18px)`; animId = requestAnimationFrame(frame);} frame(); }
+      startAnim();
+
+      btn.addEventListener('click',()=>{ const p = pos; if(p>=goldenLeft && p<=goldenRight){ showWinner('Perfect timing — you always know the right moment ❤️'); } else showWinner('Nice try — your timing is lovely!'); });
+
+    }
+
+    /*************************************************************************
+     * Dots & Boxes (3x3 boxes)
+     *************************************************************************/
+    function renderDotsAndBoxes(){
+      const el = document.getElementById('game-area'); el.innerHTML='';
+      const title = document.createElement('h2'); title.innerText='Play to unlock the pages — Dots & Boxes'; el.appendChild(title);
+      const info = document.createElement('div'); info.className='status'; info.innerHTML = `<div>Consecutive wins: <span id='cw'>${consecutiveWins}</span></div>`; el.appendChild(info);
+
+      const boardWrap = document.createElement('div'); boardWrap.className='db-board card'; boardWrap.style.padding='12px'; el.appendChild(boardWrap);
+
+      const ROWS = 4, COLS = 4;
+      const hEdges = Array((ROWS)*(COLS-1)).fill(0);
+      const vEdges = Array((ROWS-1)*(COLS)).fill(0);
+      const boxes = Array((ROWS-1)*(COLS-1)).fill(null);
+      let currentPlayer = 'P';
+
+      function drawBoard(){
+        boardWrap.innerHTML='';
+        for(let r=0;r<ROWS;r++){
+          const row = document.createElement('div'); row.className='db-row'; row.style.display='flex'; row.style.alignItems='center';
+          for(let c=0;c<COLS;c++){
+            const d = document.createElement('div'); d.className='dot'; row.appendChild(d);
+            if(c<COLS-1){
+              const idx = r*(COLS-1)+c;
+              const ewrap = document.createElement('div'); ewrap.className='edge h';
+              const btn = document.createElement('button');
+              btn.onclick = (()=>{ const i = idx; return ()=>{ if(!hEdges[i]){ hEdges[i]=1; afterMove('h',i);} }; })();
+              btn.style.background = hEdges[idx]? 'linear-gradient(90deg,var(--accent),#ffb6d0)' : 'transparent';
+              ewrap.appendChild(btn); row.appendChild(ewrap);
+            }
+          }
+          boardWrap.appendChild(row);
+          if(r<ROWS-1){
+            const vrow = document.createElement('div'); vrow.className='db-row'; vrow.style.display='flex'; vrow.style.alignItems='center';
+            for(let c=0;c<COLS;c++){
+              const vwrap = document.createElement('div'); vwrap.className='edge v';
+              const idx = r*COLS+c;
+              const btn = document.createElement('button');
+              btn.onclick = (()=>{ const i = idx; return ()=>{ if(!vEdges[i]){ vEdges[i]=1; afterMove('v',i);} }; })();
+              btn.style.background = vEdges[idx]? 'linear-gradient(90deg,var(--accent),#ffb6d0)' : 'transparent';
+              vwrap.appendChild(btn); vrow.appendChild(vwrap);
+              if(c<COLS-1){
+                const boxIdx = r*(COLS-1)+c; const bdiv=document.createElement('div'); bdiv.className='box';
+                if(boxes[boxIdx]){ bdiv.classList.add('owned'); bdiv.innerText = boxes[boxIdx]==='P' ? 'You' : 'AI'; }
+                vrow.appendChild(bdiv);
+              }
+            }
+            boardWrap.appendChild(vrow);
+          }
+        }
+      }
+
+      function afterMove(type, idx){
+        const gained = checkCompletedBoxes(type, idx);
+        drawBoard();
+        if(gained>0){
+          // same player keeps turn
+        } else {
+          currentPlayer = (currentPlayer==='P')?'AI':'P';
+        }
+        updateInfo();
+        if(currentPlayer==='AI') setTimeout(aiMove, 350);
+        if(isGameOver()) finishGame();
+      }
+
+      function checkCompletedBoxes(type, idx){
+        let gained = 0;
+        for(let b=0;b<boxes.length;b++){
+          if(boxes[b]) continue;
+          const r = Math.floor(b/(COLS-1)); const c = b%(COLS-1);
+          const top = r*(COLS-1)+c; const bottom = (r+1)*(COLS-1)+c;
+          const left = r*COLS+c; const right = r*COLS+c+1;
+          const topDone = hEdges[top];
+          const bottomDone = hEdges[bottom];
+          const leftDone = vEdges[left];
+          const rightDone = vEdges[right];
+          if(topDone && bottomDone && leftDone && rightDone){ boxes[b]=currentPlayer; gained++; }
+        }
+        return gained;
+      }
+
+      function updateInfo(){
+        const scP = boxes.filter(x=>x==='P').length; const scAI = boxes.filter(x=>x==='AI').length;
+        const cwEl = document.getElementById('cw'); if(cwEl) cwEl.innerText = consecutiveWins;
+        info.innerHTML = `<div>Score — You: ${scP} | AI: ${scAI}</div><div>Turn: ${currentPlayer}</div>`;
+      }
+
+      function legalMoves(){
+        const moves=[]; for(let i=0;i<hEdges.length;i++) if(!hEdges[i]) moves.push({t:'h',i}); for(let i=0;i<vEdges.length;i++) if(!vEdges[i]) moves.push({t:'v',i}); return moves;
+      }
+
+      function isGameOver(){ return legalMoves().length===0; }
+
+      function finishGame(){
+        const scP = boxes.filter(x=>x==='P').length; const scAI = boxes.filter(x=>x==='AI').length;
+        if(scP>scAI){ consecutiveWins++; showWinner('You won the Dots & Boxes!'); }
+        else { consecutiveWins=0; showWinner('AI won this round.'); }
+        if(consecutiveWins>=WINS_TO_UNLOCK){ unlockPages(); }
+        updateInfo();
+      }
+
+      function aiMove(){
+        const moves = legalMoves(); if(moves.length===0) return finishGame();
+        if(Math.random() < CHANCE_TO_MISTAKE){ const choice = moves[Math.floor(Math.random()*moves.length)]; applyMove(choice.t, choice.i, 'AI'); return; }
+        for(const m of moves){
+          let tempHE = hEdges.slice(); let tempVE = vEdges.slice(); if(m.t==='h') tempHE[m.i]=1; else tempVE[m.i]=1;
+          let gained=0;
+          for(let b=0;b<boxes.length;b++){
+            if(boxes[b]) continue;
+            const r = Math.floor(b/(COLS-1)); const c = b%(COLS-1);
+            const top = r*(COLS-1)+c; const bottom = (r+1)*(COLS-1)+c;
+            const left = r*COLS+c; const right = r*COLS+c+1;
+            if(tempHE[top] && tempHE[bottom] && tempVE[left] && tempVE[right]) gained++;
+          }
+          if(gained>0){ applyMove(m.t,m.i,'AI'); return; }
+        }
+        let best = null; let bestScore = Infinity;
+        for(const m of moves){
+          let tempHE = hEdges.slice(); let tempVE = vEdges.slice(); if(m.t==='h') tempHE[m.i]=1; else tempVE[m.i]=1;
+          let oppGains = 0;
+          const oppMoves = [];
+          for(let i=0;i<tempHE.length;i++) if(!tempHE[i]) oppMoves.push({t:'h',i}); for(let i=0;i<tempVE.length;i++) if(!tempVE[i]) oppMoves.push({t:'v',i});
+          for(const om of oppMoves){ let tHE = tempHE.slice(); let tVE = tempVE.slice(); if(om.t==='h') tHE[om.i]=1; else tVE[om.i]=1; for(let b=0;b<boxes.length;b++){ if(boxes[b]) continue; const r = Math.floor(b/(COLS-1)); const c = b%(COLS-1); const top = r*(COLS-1)+c; const bottom = (r+1)*(COLS-1)+c; const left = r*COLS+c; const right = r*COLS+c+1; if(tHE[top] && tHE[bottom] && tVE[left] && tVE[right]) oppGains++; } }
+          if(oppGains < bestScore){ bestScore = oppGains; best = m; }
+        }
+        if(best) applyMove(best.t,best.i,'AI'); else { const choice=moves[0]; applyMove(choice.t,choice.i,'AI'); }
+      }
+
+      function applyMove(t,i,player){ if(t==='h') hEdges[i]=1; else vEdges[i]=1; currentPlayer = player; const gained = checkCompletedBoxes(t,i); if(gained===0) currentPlayer = (player==='P')?'AI':'P'; drawBoard(); updateInfo(); if(currentPlayer==='AI') setTimeout(aiMove, 300); if(isGameOver()) finishGame(); }
+
+      drawBoard(); updateInfo();
+      const resetBtn = document.createElement('button'); resetBtn.className='btn'; resetBtn.innerText='Reset Board'; resetBtn.style.marginTop='8px'; resetBtn.onclick=()=>location.reload(); el.appendChild(resetBtn);
+    }
+
+    /*************************************************************************
+     * Utilities
+     *************************************************************************/
+    function showWinner(msg){
+      const existing = document.querySelector('.winner-modal'); if(existing) existing.remove();
+      const d = document.createElement('div'); d.className='winner-modal'; d.innerHTML = `<div style="font-size:18px;font-weight:700;margin-bottom:8px">${msg}</div><div style='display:flex;gap:8px;justify-content:flex-end'><button class='btn' onclick="this.closest('.winner-modal').remove()">Close</button></div>`;
+      document.body.appendChild(d);
+    }
+
+    function unlockPages(){ unlocked=true; document.getElementById('pages').classList.add('open'); renderGallery(); renderLovelyGames(); renderTimeline(); showSection('page1'); document.getElementById('game-area').style.display='none'; }
+
+    function renderTimeline(){ const timeline = document.getElementById('timeline'); timeline.innerHTML=''; const sample = [{img:'/images/img1.jpg', cap:'Our first memory'},{img:'/images/img2.jpg', cap:'Laughing together'},{img:'/images/img3.jpg', cap:'A little adventure'}]; (sample.concat(window._memories || [])).forEach(m=>{ const item = document.createElement('div'); item.className='memory card'; const im = document.createElement('img'); im.src = m.img; im.alt='mem'; const txt = document.createElement('div'); txt.innerHTML = `<div style='font-weight:700'>${m.cap||'A memory'}</div>`; item.appendChild(im); item.appendChild(txt); timeline.appendChild(item); }); }
+
+    function addMemory(){ const img = document.getElementById('mem-img').value.trim(); const cap = document.getElementById('mem-caption').value.trim(); if(!img) return alert('Please provide image path'); window._memories = window._memories || []; window._memories.unshift({img,cap}); renderTimeline(); document.getElementById('mem-img').value=''; document.getElementById('mem-caption').value=''; showWinner('Memory added! ❤️'); }
+
+    function downloadNote(){ const txt = document.getElementById('noteText').value; const blob = new Blob([txt],{type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'message_for_asif.txt'; document.body.appendChild(a); a.click(); a.remove(); }
+
+    (function init(){ if(gameHiddenByComment){ unlockPages(); return; } renderDotsAndBoxes(); })();
+  </script></body>
+</html>
