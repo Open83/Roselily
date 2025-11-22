@@ -18,7 +18,6 @@
             color: #5a3a4a;
         }
 
-        /* Navigation */
         nav {
             background: rgba(255, 255, 255, 0.95);
             padding: 1rem;
@@ -45,9 +44,13 @@
         }
 
         .nav-links {
-            display: flex;
+            display: none;
             gap: 1rem;
             flex-wrap: wrap;
+        }
+
+        .nav-links.show {
+            display: flex;
         }
 
         .nav-btn {
@@ -59,16 +62,9 @@
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.3s;
-            opacity: 0.5;
-            pointer-events: none;
         }
 
-        .nav-btn.unlocked {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .nav-btn.unlocked:hover {
+        .nav-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(214, 51, 132, 0.4);
         }
@@ -77,7 +73,6 @@
             background: linear-gradient(135deg, #d63384 0%, #a02560 100%);
         }
 
-        /* Container */
         .container {
             max-width: 1200px;
             margin: 2rem auto;
@@ -99,7 +94,6 @@
         }
 
         /* Game Section */
-        /* <!-- TOGGLE THIS LINE TO HIDE GAME: */
         .game-section {
             background: white;
             border-radius: 20px;
@@ -107,7 +101,6 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             text-align: center;
         }
-        /* --> */
 
         .game-section h2 {
             color: #d63384;
@@ -125,7 +118,6 @@
             justify-content: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
-            flex-wrap: wrap;
         }
 
         .win-heart {
@@ -144,83 +136,18 @@
             50% { transform: scale(1.3); }
         }
 
-        /* Dots & Boxes Game */
         .game-board {
             display: inline-block;
             margin: 2rem auto;
-            background: #fff;
-            padding: 1rem;
+            background: #f8f9fa;
+            padding: 20px;
             border-radius: 15px;
         }
 
-        .game-grid {
-            display: grid;
-            gap: 0;
-            justify-content: center;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            background: #d63384;
-            border-radius: 50%;
-        }
-
-        .h-line, .v-line {
-            background: #e0e0e0;
+        #gameCanvas {
+            border: none;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .h-line {
-            height: 4px;
-        }
-
-        .v-line {
-            width: 4px;
-        }
-
-        .h-line:hover, .v-line:hover {
-            background: #ff9ec5;
-        }
-
-        .h-line.selected, .v-line.selected {
-            background: #d63384;
-        }
-
-        .h-line.ai-selected, .v-line.ai-selected {
-            background: #6c757d;
-        }
-
-        .box {
-            position: relative;
-        }
-
-        .box-fill {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            right: 2px;
-            bottom: 2px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            animation: boxFill 0.3s;
-        }
-
-        @keyframes boxFill {
-            from { transform: scale(0); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .box-fill.player {
-            background: linear-gradient(135deg, #ff6b9d 0%, #d63384 100%);
-        }
-
-        .box-fill.ai {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            display: block;
         }
 
         .game-status {
@@ -228,14 +155,11 @@
             font-size: 1.2rem;
             font-weight: bold;
             color: #d63384;
+            min-height: 30px;
         }
 
         .game-controls {
             margin-top: 1rem;
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
         }
 
         .btn {
@@ -258,7 +182,7 @@
             box-shadow: 0 4px 12px rgba(214, 51, 132, 0.4);
         }
 
-        /* Page 1 - Images & Messages */
+        /* Pages Styles */
         .image-message-grid {
             display: grid;
             gap: 2rem;
@@ -308,7 +232,6 @@
             color: #5a3a4a;
         }
 
-        /* Page 2 - Games */
         .games-grid {
             display: grid;
             gap: 2rem;
@@ -328,7 +251,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Jigsaw Puzzle */
         .puzzle-container {
             display: grid;
             gap: 2px;
@@ -344,6 +266,7 @@
             cursor: pointer;
             transition: all 0.2s;
             border-radius: 5px;
+            background-size: 300% 300%;
         }
 
         .puzzle-piece:hover {
@@ -355,7 +278,6 @@
             border: 3px solid #d63384;
         }
 
-        /* Reaction Game */
         .reaction-game {
             position: relative;
             height: 150px;
@@ -385,7 +307,6 @@
             border-right: 2px dashed #d63384;
         }
 
-        /* Page 3 - Notepad */
         .notepad-container {
             background: white;
             border-radius: 20px;
@@ -424,7 +345,6 @@
             text-align: center;
         }
 
-        /* Page 4 - Memory Lane */
         .timeline {
             max-width: 600px;
             margin: 0 auto;
@@ -481,7 +401,6 @@
             font-size: 0.9rem;
         }
 
-        /* Fullscreen Image Viewer */
         .fullscreen-viewer {
             display: none;
             position: fixed;
@@ -493,7 +412,6 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s;
         }
 
         .fullscreen-viewer.active {
@@ -522,7 +440,6 @@
             justify-content: center;
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -546,6 +463,7 @@
             border-radius: 20px;
             text-align: center;
             max-width: 400px;
+            margin: 0 1rem;
             animation: slideUp 0.3s;
         }
 
@@ -559,7 +477,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-content {
                 justify-content: center;
@@ -569,35 +486,12 @@
                 font-size: 1.2rem;
             }
 
-            .nav-links {
-                justify-content: center;
-                width: 100%;
-            }
-
-            .nav-btn {
-                padding: 0.5rem 1rem;
-                font-size: 0.85rem;
-            }
-
             .game-section {
                 padding: 1rem;
             }
 
             .game-section h2 {
                 font-size: 1.4rem;
-            }
-
-            .dot {
-                width: 10px;
-                height: 10px;
-            }
-
-            .h-line {
-                height: 3px;
-            }
-
-            .v-line {
-                width: 3px;
             }
         }
     </style>
@@ -606,20 +500,17 @@
     <nav>
         <div class="nav-content">
             <div class="nav-title">💕 For You</div>
-            <div class="nav-links">
-                <button class="nav-btn" data-page="page1">Images & Messages</button>
-                <button class="nav-btn" data-page="page2">Lovely Games</button>
-                <button class="nav-btn" data-page="page3">Your Notepad</button>
-                <button class="nav-btn" data-page="page4">Memory Lane</button>
+            <div class="nav-links" id="navLinks">
+                <button class="nav-btn" onclick="showPage('page1')">Images & Messages</button>
+                <button class="nav-btn" onclick="showPage('page2')">Lovely Games</button>
+                <button class="nav-btn" onclick="showPage('page3')">Your Notepad</button>
+                <button class="nav-btn" onclick="showPage('page4')">Memory Lane</button>
             </div>
         </div>
     </nav>
 
     <div class="container">
-        <!-- Game Section -->
-        <!-- TOGGLE THIS LINE TO HIDE GAME: -->
         <div class="game-section" id="gameSection">
-        <!-- --> 
             <h2>🎮 Unlock the Pages</h2>
             <p>Win 3 games consecutively to unlock all pages!</p>
             
@@ -630,7 +521,7 @@
             </div>
 
             <div class="game-board">
-                <div class="game-grid" id="gameGrid"></div>
+                <canvas id="gameCanvas" width="400" height="400"></canvas>
             </div>
 
             <div class="game-status" id="gameStatus">Your turn!</div>
@@ -639,7 +530,6 @@
             </div>
         </div>
 
-        <!-- Page 1: Images & Messages -->
         <div class="page" id="page1">
             <div class="image-message-grid">
                 <div class="image-message-card">
@@ -677,10 +567,8 @@
             </div>
         </div>
 
-        <!-- Page 2: Lovely Games -->
         <div class="page" id="page2">
             <div class="games-grid">
-                <!-- Jigsaw Puzzle -->
                 <div class="game-card">
                     <h3>🧩 Photo Puzzle</h3>
                     <p>Piece together our memory!</p>
@@ -688,11 +576,10 @@
                     <button class="btn btn-primary" onclick="shufflePuzzle()">Shuffle</button>
                 </div>
 
-                <!-- Reaction Heart Game -->
                 <div class="game-card">
                     <h3>💖 Heart Timing</h3>
                     <p>Tap when the heart reaches the center!</p>
-                    <div class="reaction-game" id="reactionGame">
+                    <div class="reaction-game">
                         <div class="target-zone"></div>
                         <div class="heart-slider" id="heartSlider">❤️</div>
                     </div>
@@ -702,7 +589,6 @@
             </div>
         </div>
 
-        <!-- Page 3: Notepad -->
         <div class="page" id="page3">
             <div class="notepad-container">
                 <div class="notepad-header">
@@ -716,598 +602,230 @@
             </div>
         </div>
 
-        <!-- Page 4: Memory Lane -->
         <div class="page" id="page4">
             <h2 style="text-align: center; color: #d63384; margin-bottom: 2rem;">💝 Our Memory Lane</h2>
-            <div class="timeline" id="timeline">
-                <div class="timeline-item" data-img="https://via.placeholder.com/400x711/ffccdd/ffffff?text=Our+First+Date">
+            <div class="timeline">
+                <div class="timeline-item" onclick="openViewer(this)" data-img="https://via.placeholder.com/400x711/ffccdd/ffffff?text=Our+First+Date">
                     <div class="timeline-date">January 2024</div>
                     <img class="timeline-image" src="https://via.placeholder.com/400x711/ffccdd/ffffff?text=Our+First+Date" alt="Memory">
                     <div class="timeline-caption">
                         The day we first met - I'll never forget how nervous and excited I was!
                     </div>
-                    <button class="add-note-btn" onclick="addPersonalNote(this)">Add Your Note</button>
+                    <button class="add-note-btn" onclick="event.stopPropagation(); addPersonalNote(this)">Add Your Note</button>
                 </div>
 
-                <div class="timeline-item" data-img="https://via.placeholder.com/400x711/ffd6e8/ffffff?text=Adventure+Together">
+                <div class="timeline-item" onclick="openViewer(this)" data-img="https://via.placeholder.com/400x711/ffd6e8/ffffff?text=Adventure+Together">
                     <div class="timeline-date">March 2024</div>
                     <img class="timeline-image" src="https://via.placeholder.com/400x711/ffd6e8/ffffff?text=Adventure+Together" alt="Memory">
                     <div class="timeline-caption">
                         Our little adventure that turned into the best day ever.
                     </div>
-                    <button class="add-note-btn" onclick="addPersonalNote(this)">Add Your Note</button>
+                    <button class="add-note-btn" onclick="event.stopPropagation(); addPersonalNote(this)">Add Your Note</button>
                 </div>
 
-                <div class="timeline-item" data-img="https://via.placeholder.com/400x711/ffe5f1/ffffff?text=Special+Moment">
+                <div class="timeline-item" onclick="openViewer(this)" data-img="https://via.placeholder.com/400x711/ffe5f1/ffffff?text=Special+Moment">
                     <div class="timeline-date">June 2024</div>
                     <img class="timeline-image" src="https://via.placeholder.com/400x711/ffe5f1/ffffff?text=Special+Moment" alt="Memory">
                     <div class="timeline-caption">
                         This moment made me realize how lucky I am to have you.
                     </div>
-                    <button class="add-note-btn" onclick="addPersonalNote(this)">Add Your Note</button>
+                    <button class="add-note-btn" onclick="event.stopPropagation(); addPersonalNote(this)">Add Your Note</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Fullscreen Viewer -->
-    <div class="fullscreen-viewer" id="fullscreenViewer">
-        <div class="close-viewer" onclick="closeViewer()">×</div>
+    <div class="fullscreen-viewer" id="fullscreenViewer" onclick="closeViewer()">
+        <div class="close-viewer">×</div>
         <img class="fullscreen-image" id="fullscreenImage" src="" alt="Memory">
     </div>
 
-    <!-- Modal -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h2 id="modalTitle">🎉 Congratulations!</h2>
-            <p id="modalMessage">You've unlocked all pages!</p>
+            <h2 id="modalTitle"></h2>
+            <p id="modalMessage"></p>
             <button class="btn btn-primary" onclick="closeModal()">Close</button>
         </div>
     </div>
 
     <script>
-        // ===== CONFIGURATION =====
-        const CHANCE_TO_MISTAKE = 0.35; // Adjust AI difficulty (0.1 = hard, 0.6 = easy)
-        const GRID_SIZE = 4; // 4x4 grid (3x3 boxes)
+        // Configuration
+        var CHANCE_TO_MISTAKE = 0.35;
+        var GRID_SIZE = 3;
+        var CELL_SIZE = 120;
+        var DOT_RADIUS = 8;
+        var LINE_WIDTH = 6;
 
-        // ===== GAME STATE =====
-        let currentPlayer = 'player';
-        let consecutiveWins = 0;
-        let grid = {
-            hLines: [],
-            vLines: [],
-            boxes: []
-        };
-        let scores = { player: 0, ai: 0 };
+        // Game state
+        var canvas, ctx;
+        var hLines = [];
+        var vLines = [];
+        var boxes = [];
+        var scores = {player: 0, ai: 0};
+        var currentPlayer = 'player';
+        var consecutiveWins = 0;
+        var gameActive = true;
 
-        // ===== INITIALIZE =====
         function initGame() {
-            const gameGrid = document.getElementById('gameGrid');
-            gameGrid.innerHTML = '';
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
             
-            // Initialize state
-            grid.hLines = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE - 1).fill(0));
-            grid.vLines = Array(GRID_SIZE - 1).fill(null).map(() => Array(GRID_SIZE).fill(0));
-            grid.boxes = Array(GRID_SIZE - 1).fill(null).map(() => Array(GRID_SIZE - 1).fill(0));
-            scores = { player: 0, ai: 0 };
-            currentPlayer = 'player';
-
-            // Create grid layout
-            const totalRows = GRID_SIZE * 2 - 1;
-            const totalCols = GRID_SIZE * 2 - 1;
-            gameGrid.style.gridTemplateColumns = `repeat(${totalCols}, auto)`;
-            gameGrid.style.gridTemplateRows = `repeat(${totalRows}, auto)`;
-
-            // Build grid elements
-            for (let row = 0; row < totalRows; row++) {
-                for (let col = 0; col < totalCols; col++) {
-                    const el = document.createElement('div');
-                    
-                    if (row % 2 === 0 && col % 2 === 0) {
-                        // Dot
-                        el.className = 'dot';
-                    } else if (row % 2 === 0) {
-                        // Horizontal line
-                        el.className = 'h-line';
-                        const r = row / 2;
-                        const c = (col - 1) / 2;
-                        el.dataset.type = 'h';
-                        el.dataset.row = r;
-                        el.dataset.col = c;
-                        el.onclick = () => makeMove('h', r, c);
-                    } else if (col % 2 === 0) {
-                        // Vertical line
-                        el.className = 'v-line';
-                        const r = (row - 1) / 2;
-                        const c = col / 2;
-                        el.dataset.type = 'v';
-                        el.dataset.row = r;
-                        el.dataset.col = c;
-                        el.onclick = () => makeMove('v', r, c);
-                    } else {
-                        // Box
-                        el.className = 'box';
-                        const r = (row - 1) / 2;
-                        const c = (col - 1) / 2;
-                        el.dataset.row = r;
-                        el.dataset.col = c;
-                    }
-                    
-                    gameGrid.appendChild(el);
+            hLines = [];
+            vLines = [];
+            boxes = [];
+            
+            for (var i = 0; i < GRID_SIZE + 1; i++) {
+                hLines[i] = [];
+                for (var j = 0; j < GRID_SIZE; j++) {
+                    hLines[i][j] = 0;
                 }
             }
-
+            
+            for (var i = 0; i < GRID_SIZE; i++) {
+                vLines[i] = [];
+                boxes[i] = [];
+                for (var j = 0; j < GRID_SIZE + 1; j++) {
+                    vLines[i][j] = 0;
+                }
+                for (var j = 0; j < GRID_SIZE; j++) {
+                    boxes[i][j] = 0;
+                }
+            }
+            
+            scores = {player: 0, ai: 0};
+            currentPlayer = 'player';
+            gameActive = true;
+            
+            canvas.onclick = handleClick;
+            drawBoard();
             updateStatus();
+        }
+
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw dots
+            ctx.fillStyle = '#d63384';
+            for (var i = 0; i < GRID_SIZE + 1; i++) {
+                for (var j = 0; j < GRID_SIZE + 1; j++) {
+                    ctx.beginPath();
+                    ctx.arc(50 + j * CELL_SIZE, 50 + i * CELL_SIZE, DOT_RADIUS, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            // Draw horizontal lines
+            for (var i = 0; i < GRID_SIZE + 1; i++) {
+                for (var j = 0; j < GRID_SIZE; j++) {
+                    if (hLines[i][j] === 0) {
+                        ctx.strokeStyle = '#e0e0e0';
+                    } else if (hLines[i][j] === 1) {
+                        ctx.strokeStyle = '#d63384';
+                    } else {
+                        ctx.strokeStyle = '#6c757d';
+                    }
+                    ctx.lineWidth = LINE_WIDTH;
+                    ctx.beginPath();
+                    ctx.moveTo(50 + j * CELL_SIZE + DOT_RADIUS, 50 + i * CELL_SIZE);
+                    ctx.lineTo(50 + (j + 1) * CELL_SIZE - DOT_RADIUS, 50 + i * CELL_SIZE);
+                    ctx.stroke();
+                }
+            }
+            
+            // Draw vertical lines
+            for (var i = 0; i < GRID_SIZE; i++) {
+                for (var j = 0; j < GRID_SIZE + 1; j++) {
+                    if (vLines[i][j] === 0) {
+                        ctx.strokeStyle = '#e0e0e0';
+                    } else if (vLines[i][j] === 1) {
+                        ctx.strokeStyle = '#d63384';
+                    } else {
+                        ctx.strokeStyle = '#6c757d';
+                    }
+                    ctx.lineWidth = LINE_WIDTH;
+                    ctx.beginPath();
+                    ctx.moveTo(50 + j * CELL_SIZE, 50 + i * CELL_SIZE + DOT_RADIUS);
+                    ctx.lineTo(50 + j * CELL_SIZE, 50 + (i + 1) * CELL_SIZE - DOT_RADIUS);
+                    ctx.stroke();
+                }
+            }
+            
+            // Draw filled boxes
+            for (var i = 0; i < GRID_SIZE; i++) {
+                for (var j = 0; j < GRID_SIZE; j++) {
+                    if (boxes[i][j] === 1) {
+                        ctx.fillStyle = 'rgba(214, 51, 132, 0.3)';
+                        ctx.fillRect(50 + j * CELL_SIZE + 10, 50 + i * CELL_SIZE + 10, CELL_SIZE - 20, CELL_SIZE - 20);
+                        ctx.font = '40px Arial';
+                        ctx.fillStyle = '#d63384';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('💖', 50 + j * CELL_SIZE + CELL_SIZE / 2, 50 + i * CELL_SIZE + CELL_SIZE / 2);
+                    } else if (boxes[i][j] === 2) {
+                        ctx.fillStyle = 'rgba(108, 117, 125, 0.3)';
+                        ctx.fillRect(50 + j * CELL_SIZE + 10, 50 + i * CELL_SIZE + 10, CELL_SIZE - 20, CELL_SIZE - 20);
+                        ctx.font = '40px Arial';
+                        ctx.fillStyle = '#6c757d';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('🤖', 50 + j * CELL_SIZE + CELL_SIZE / 2, 50 + i * CELL_SIZE + CELL_SIZE / 2);
+                    }
+                }
+            }
+        }
+
+        function handleClick(e) {
+            if (!gameActive || currentPlayer !== 'player') return;
+            
+            var rect = canvas.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            
+            // Check horizontal lines
+            for (var i = 0; i < GRID_SIZE + 1; i++) {
+                for (var j = 0; j < GRID_SIZE; j++) {
+                    var lineY = 50 + i * CELL_SIZE;
+                    var lineX1 = 50 + j * CELL_SIZE;
+                    var lineX2 = 50 + (j + 1) * CELL_SIZE;
+                    
+                    if (hLines[i][j] === 0 && Math.abs(y - lineY) < 15 && x > lineX1 && x < lineX2) {
+                        makeMove('h', i, j);
+                        return;
+                    }
+                }
+            }
+            
+            // Check vertical lines
+            for (var i = 0; i < GRID_SIZE; i++) {
+                for (var j = 0; j < GRID_SIZE + 1; j++) {
+                    var lineX = 50 + j * CELL_SIZE;
+                    var lineY1 = 50 + i * CELL_SIZE;
+                    var lineY2 = 50 + (i + 1) * CELL_SIZE;
+                    
+                    if (vLines[i][j] === 0 && Math.abs(x - lineX) < 15 && y > lineY1 && y < lineY2) {
+                        makeMove('v', i, j);
+                        return;
+                    }
+                }
+            }
         }
 
         function makeMove(type, row, col) {
-            if (currentPlayer !== 'player') return;
-
-            if (type === 'h' && grid.hLines[row][col] !== 0) return;
-            if (type === 'v' && grid.vLines[row][col] !== 0) return;
-
-            const completedBox = applyMove(type, row, col, 'player');
-
-            if (!completedBox) {
-                currentPlayer = 'ai';
-                updateStatus();
-                setTimeout(aiMove, 500);
-            } else {
-                updateStatus();
-                checkGameOver();
-            }
-        }
-
-        function applyMove(type, row, col, player) {
-            const playerCode = player === 'player' ? 1 : 2;
+            var playerCode = currentPlayer === 'player' ? 1 : 2;
+            var completedBox = false;
             
             if (type === 'h') {
-                grid.hLines[row][col] = playerCode;
-            } else {
-                grid.vLines[row][col] = playerCode;
-            }
-
-            // Update visual
-            const el = document.querySelector(`[data-type="${type}"][data-row="${row}"][data-col="${col}"]`);
-            if (el) {
-                el.classList.add(player === 'player' ? 'selected' : 'ai-selected');
-            }
-
-            // Check for completed boxes
-            let completedBox = false;
-            const boxesToCheck = getAffectedBoxes(type, row, col);
-            
-            boxesToCheck.forEach(([br, bc]) => {
-                if (isBoxComplete(br, bc) && grid.boxes[br][bc] === 0) {
-                    grid.boxes[br][bc] = playerCode;
-                    scores[player]++;
-                    fillBox(br, bc, player);
+                hLines[row][col] = playerCode;
+                
+                if (row > 0 && isBoxComplete(row - 1, col) && boxes[row - 1][col] === 0) {
+                    boxes[row - 1][col] = playerCode;
+                    scores[currentPlayer]++;
                     completedBox = true;
                 }
-            });
-
-            return completedBox;
-        }
-
-        function getAffectedBoxes(type, row, col) {
-            const boxes = [];
-            if (type === 'h') {
-                if (row > 0) boxes.push([row - 1, col]);
-                if (row < GRID_SIZE - 1) boxes.push([row, col]);
-            } else {
-                if (col > 0) boxes.push([row, col - 1]);
-                if (col < GRID_SIZE - 1) boxes.push([row, col]);
-            }
-            return boxes;
-        }
-
-        function isBoxComplete(row, col) {
-            return grid.hLines[row][col] !== 0 &&
-                   grid.hLines[row + 1][col] !== 0 &&
-                   grid.vLines[row][col] !== 0 &&
-                   grid.vLines[row][col + 1] !== 0;
-        }
-
-        function fillBox(row, col, player) {
-            const boxEl = document.querySelector(`.box[data-row="${row}"][data-col="${col}"]`);
-            if (boxEl) {
-                const fill = document.createElement('div');
-                fill.className = `box-fill ${player}`;
-                fill.textContent = player === 'player' ? '💖' : '🤖';
-                boxEl.appendChild(fill);
-            }
-        }
-
-        function aiMove() {
-            if (Math.random() < CHANCE_TO_MISTAKE) {
-                makeRandomMove();
-            } else {
-                makeBestMove();
-            }
-        }
-
-        function makeRandomMove() {
-            const available = getAvailableMoves();
-            if (available.length === 0) return;
-            
-            const move = available[Math.floor(Math.random() * available.length)];
-            const completedBox = applyMove(move.type, move.row, move.col, 'ai');
-
-            if (!completedBox) {
-                currentPlayer = 'player';
-            }
-            updateStatus();
-            checkGameOver();
-        }
-
-        function makeBestMove() {
-            // Strategy: 1. Complete boxes if possible, 2. Avoid giving opponent boxes, 3. Random safe move
-            const available = getAvailableMoves();
-            if (available.length === 0) return;
-
-            // Check for moves that complete boxes
-            for (const move of available) {
-                if (wouldCompleteBox(move.type, move.row, move.col)) {
-                    const completedBox = applyMove(move.type, move.row, move.col, 'ai');
-                    if (!completedBox) currentPlayer = 'player';
-                    updateStatus();
-                    checkGameOver();
-                    return;
-                }
-            }
-
-            // Avoid moves that give opponent a box
-            const safeMoves = available.filter(move => 
-                !wouldGiveOpponentBox(move.type, move.row, move.col)
-            );
-
-            const move = safeMoves.length > 0 
-                ? safeMoves[Math.floor(Math.random() * safeMoves.length)]
-                : available[Math.floor(Math.random() * available.length)];
-
-            const completedBox = applyMove(move.type, move.row, move.col, 'ai');
-            if (!completedBox) currentPlayer = 'player';
-            updateStatus();
-            checkGameOver();
-        }
-
-        function getAvailableMoves() {
-            const moves = [];
-            for (let r = 0; r < GRID_SIZE; r++) {
-                for (let c = 0; c < GRID_SIZE - 1; c++) {
-                    if (grid.hLines[r][c] === 0) {
-                        moves.push({ type: 'h', row: r, col: c });
-                    }
-                }
-            }
-            for (let r = 0; r < GRID_SIZE - 1; r++) {
-                for (let c = 0; c < GRID_SIZE; c++) {
-                    if (grid.vLines[r][c] === 0) {
-                        moves.push({ type: 'v', row: r, col: c });
-                    }
-                }
-            }
-            return moves;
-        }
-
-        function wouldCompleteBox(type, row, col) {
-            const temp = JSON.parse(JSON.stringify(grid));
-            if (type === 'h') temp.hLines[row][col] = 2;
-            else temp.vLines[row][col] = 2;
-
-            const boxes = getAffectedBoxes(type, row, col);
-            return boxes.some(([br, bc]) => {
-                if (temp.boxes[br][bc] !== 0) return false;
-                return temp.hLines[br][bc] !== 0 &&
-                       temp.hLines[br + 1][bc] !== 0 &&
-                       temp.vLines[br][bc] !== 0 &&
-                       temp.vLines[br][bc + 1] !== 0;
-            });
-        }
-
-        function wouldGiveOpponentBox(type, row, col) {
-            const temp = JSON.parse(JSON.stringify(grid));
-            if (type === 'h') temp.hLines[row][col] = 2;
-            else temp.vLines[row][col] = 2;
-
-            const boxes = getAffectedBoxes(type, row, col);
-            return boxes.some(([br, bc]) => {
-                if (temp.boxes[br][bc] !== 0) return false;
-                let edges = 0;
-                if (temp.hLines[br][bc] !== 0) edges++;
-                if (temp.hLines[br + 1][bc] !== 0) edges++;
-                if (temp.vLines[br][bc] !== 0) edges++;
-                if (temp.vLines[br][bc + 1] !== 0) edges++;
-                return edges === 3;
-            });
-        }
-
-        function updateStatus() {
-            const status = document.getElementById('gameStatus');
-            if (currentPlayer === 'player') {
-                status.textContent = `Your turn! (You: ${scores.player} | AI: ${scores.ai})`;
-            } else {
-                status.textContent = `AI is thinking... (You: ${scores.player} | AI: ${scores.ai})`;
-            }
-        }
-
-        function checkGameOver() {
-            const totalBoxes = (GRID_SIZE - 1) * (GRID_SIZE - 1);
-            if (scores.player + scores.ai === totalBoxes) {
-                setTimeout(() => {
-                    if (scores.player > scores.ai) {
-                        consecutiveWins++;
-                        updateWinHearts();
-                        
-                        if (consecutiveWins >= 3) {
-                            unlockPages();
-                            showModal('🎉 All Pages Unlocked!', 'Amazing! You won 3 games in a row! All pages are now accessible. Enjoy! ❤️');
-                        } else {
-                            showModal('🎊 You Won!', `Great job! Win ${3 - consecutiveWins} more in a row to unlock all pages!`);
-                            setTimeout(resetGame, 2000);
-                        }
-                    } else {
-                        consecutiveWins = 0;
-                        updateWinHearts();
-                        showModal('😔 AI Won', 'Don\'t give up! Try again to start your winning streak!');
-                        setTimeout(resetGame, 2000);
-                    }
-                }, 500);
-            }
-        }
-
-        function updateWinHearts() {
-            for (let i = 1; i <= 3; i++) {
-                const heart = document.getElementById(`heart${i}`);
-                if (i <= consecutiveWins) {
-                    heart.classList.add('active');
-                } else {
-                    heart.classList.remove('active');
-                }
-            }
-        }
-
-        function unlockPages() {
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.add('unlocked');
-            });
-            document.getElementById('gameSection').style.display = 'none';
-            showPage('page1');
-        }
-
-        function resetGame() {
-            initGame();
-        }
-
-        // ===== NAVIGATION =====
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById(pageId).classList.add('active');
-            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
-        }
-
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (btn.classList.contains('unlocked')) {
-                    showPage(btn.dataset.page);
-                }
-            });
-        });
-
-        // ===== MODAL =====
-        function showModal(title, message) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalMessage').textContent = message;
-            document.getElementById('modal').classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-        }
-
-        // ===== PAGE 2: JIGSAW PUZZLE =====
-        let puzzlePieces = [];
-        let selectedPiece = null;
-
-        function initPuzzle() {
-            const container = document.getElementById('puzzleContainer');
-            container.style.gridTemplateColumns = 'repeat(3, 1fr)';
-            
-            // Create 9 pieces
-            puzzlePieces = [];
-            for (let i = 0; i < 9; i++) {
-                const piece = document.createElement('div');
-                piece.className = 'puzzle-piece';
-                piece.style.backgroundImage = 'url(https://via.placeholder.com/300x533/ffd6e8/ffffff?text=Our+Memory)';
-                piece.style.backgroundSize = '300% 300%';
-                const row = Math.floor(i / 3);
-                const col = i % 3;
-                piece.style.backgroundPosition = `${col * 50}% ${row * 50}%`;
-                piece.dataset.correctPos = i;
-                piece.dataset.currentPos = i;
-                piece.onclick = () => selectPiece(piece);
-                container.appendChild(piece);
-                puzzlePieces.push(piece);
-            }
-        }
-
-        function selectPiece(piece) {
-            if (!selectedPiece) {
-                selectedPiece = piece;
-                piece.classList.add('selected');
-            } else {
-                // Swap pieces
-                const pos1 = parseInt(selectedPiece.dataset.currentPos);
-                const pos2 = parseInt(piece.dataset.currentPos);
-                
-                selectedPiece.dataset.currentPos = pos2;
-                piece.dataset.currentPos = pos1;
-                
-                const container = document.getElementById('puzzleContainer');
-                const temp = selectedPiece.cloneNode(true);
-                container.replaceChild(temp, selectedPiece);
-                container.replaceChild(selectedPiece, piece);
-                container.replaceChild(piece, temp);
-                
-                temp.onclick = () => selectPiece(temp);
-                piece.onclick = () => selectPiece(piece);
-                
-                selectedPiece.classList.remove('selected');
-                selectedPiece = null;
-                
-                // Update reference
-                puzzlePieces = Array.from(container.children);
-                
-                checkPuzzleComplete();
-            }
-        }
-
-        function shufflePuzzle() {
-            const container = document.getElementById('puzzleContainer');
-            const pieces = Array.from(container.children);
-            
-            // Shuffle array
-            for (let i = pieces.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
-            }
-            
-            // Reattach in new order
-            pieces.forEach((piece, i) => {
-                piece.dataset.currentPos = i;
-                piece.onclick = () => selectPiece(piece);
-                container.appendChild(piece);
-            });
-            
-            puzzlePieces = pieces;
-            selectedPiece = null;
-        }
-
-        function checkPuzzleComplete() {
-            const complete = puzzlePieces.every(piece => 
-                piece.dataset.correctPos === piece.dataset.currentPos
-            );
-            
-            if (complete) {
-                showModal('🎉 Puzzle Complete!', 'You put our memory back together! How sweet! 💕');
-            }
-        }
-
-        // ===== PAGE 2: REACTION GAME =====
-        let reactionInterval = null;
-        let heartPosition = 0;
-        let heartDirection = 1;
-        let reactionActive = false;
-
-        function startReaction() {
-            if (reactionActive) return;
-            
-            reactionActive = true;
-            heartPosition = 0;
-            const heart = document.getElementById('heartSlider');
-            const btn = document.getElementById('reactionBtn');
-            const result = document.getElementById('reactionResult');
-            
-            result.textContent = '';
-            btn.textContent = 'TAP NOW!';
-            btn.onclick = checkReactionTiming;
-            
-            reactionInterval = setInterval(() => {
-                heartPosition += heartDirection * 3;
-                if (heartPosition >= 100 || heartPosition <= 0) {
-                    heartDirection *= -1;
-                }
-                heart.style.left = heartPosition + '%';
-            }, 20);
-        }
-
-        function checkReactionTiming() {
-            if (!reactionActive) return;
-            
-            clearInterval(reactionInterval);
-            reactionActive = false;
-            
-            const result = document.getElementById('reactionResult');
-            const btn = document.getElementById('reactionBtn');
-            
-            // Target zone is 40-60%
-            if (heartPosition >= 40 && heartPosition <= 60) {
-                result.textContent = '💖 Perfect! Our hearts are in sync! 💖';
-                result.style.color = '#d63384';
-            } else if (heartPosition >= 30 && heartPosition <= 70) {
-                result.textContent = '💕 Close! Almost perfect!';
-                result.style.color = '#ff6b9d';
-            } else {
-                result.textContent = '❤️ Try again! You can do it!';
-                result.style.color = '#ffa6c9';
-            }
-            
-            btn.textContent = 'Start';
-            btn.onclick = startReaction;
-        }
-
-        // ===== PAGE 3: NOTEPAD =====
-        function downloadNote() {
-            const text = document.getElementById('notepadText').value;
-            if (!text.trim()) {
-                showModal('Empty Note', 'Please write something first! 📝');
-                return;
-            }
-            
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'my-note.txt';
-            a.click();
-            URL.revokeObjectURL(url);
-            
-            showModal('💾 Downloaded!', 'Your note has been saved!');
-        }
-
-        // ===== PAGE 4: MEMORY LANE =====
-        function addPersonalNote(btn) {
-            const item = btn.parentElement;
-            const existing = item.querySelector('.timeline-note');
-            
-            if (existing) {
-                const newNote = prompt('Edit your note:', existing.textContent.replace('Your note: ', ''));
-                if (newNote !== null && newNote.trim()) {
-                    existing.textContent = 'Your note: ' + newNote;
+                if (row < GRID_SIZE && isBoxComplete(row, col) && boxes[row][col] === 0) {
+                    boxes[row][col] = playerCode;
+                    scores[currentPlayer]++;
+                    completedBox = true;
                 }
             } else {
-                const note = prompt('Add your personal note to this memory:');
-                if (note && note.trim()) {
-                    const noteDiv = document.createElement('div');
-                    noteDiv.className = 'timeline-note';
-                    noteDiv.textContent = 'Your note: ' + note;
-                    item.insertBefore(noteDiv, btn);
-                }
-            }
-        }
-
-        // Timeline image viewer
-        document.querySelectorAll('.timeline-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                if (e.target.tagName !== 'BUTTON') {
-                    const img = item.dataset.img;
-                    document.getElementById('fullscreenImage').src = img;
-                    document.getElementById('fullscreenViewer').classList.add('active');
-                }
-            });
-        });
-
-        function closeViewer() {
-            document.getElementById('fullscreenViewer').classList.remove('active');
-        }
-
-        // ===== INITIALIZE ON LOAD =====
-        window.onload = () => {
-            initGame();
-            initPuzzle();
-        };
-    </script>
-</body>
-</html>
+                vLines[row][col] = playerCode;
