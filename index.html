@@ -492,16 +492,34 @@
             }
         }
 
+        // UPDATED: schedule another AI move when AI completes a box
         function makeRandomMove() {
             const available = getAvailableMoves();
             if (available.length === 0) return;
+
             const move = available[Math.floor(Math.random() * available.length)];
             const completedBox = applyMove(move.type, move.row, move.col, 'ai');
-            if (!completedBox) currentPlayer = 'player';
+
             updateStatus();
             checkGameOver();
+
+            if (completedBox) {
+                // AI gets another turn -> schedule it so UI updates are visible
+                setTimeout(() => {
+                    if (getAvailableMoves().length > 0) {
+                        currentPlayer = 'ai';
+                        updateStatus();
+                        aiMove();
+                    }
+                }, 400);
+            } else {
+                // hand back to player
+                currentPlayer = 'player';
+                updateStatus();
+            }
         }
 
+        // UPDATED: same scheduling logic applied here
         function makeBestMove() {
             const available = getAvailableMoves();
             if (available.length === 0) return;
@@ -510,9 +528,21 @@
             for (const move of available) {
                 if (wouldCompleteBox(move.type, move.row, move.col)) {
                     const completedBox = applyMove(move.type, move.row, move.col, 'ai');
-                    if (!completedBox) currentPlayer = 'player';
                     updateStatus();
                     checkGameOver();
+
+                    if (completedBox) {
+                        setTimeout(() => {
+                            if (getAvailableMoves().length > 0) {
+                                currentPlayer = 'ai';
+                                updateStatus();
+                                aiMove();
+                            }
+                        }, 400);
+                    } else {
+                        currentPlayer = 'player';
+                        updateStatus();
+                    }
                     return;
                 }
             }
@@ -522,9 +552,21 @@
             const move = safeMoves.length > 0 ? safeMoves[Math.floor(Math.random() * safeMoves.length)] : available[Math.floor(Math.random() * available.length)];
 
             const completedBox = applyMove(move.type, move.row, move.col, 'ai');
-            if (!completedBox) currentPlayer = 'player';
             updateStatus();
             checkGameOver();
+
+            if (completedBox) {
+                setTimeout(() => {
+                    if (getAvailableMoves().length > 0) {
+                        currentPlayer = 'ai';
+                        updateStatus();
+                        aiMove();
+                    }
+                }, 400);
+            } else {
+                currentPlayer = 'player';
+                updateStatus();
+            }
         }
 
         function getAvailableMoves() {
@@ -708,13 +750,18 @@
         function shufflePuzzle() {
             const container = document.getElementById('puzzleContainer');
             const pieces = Array.from(container.children);
-            // Fisher-Yates shuffle
+            // Fisher-Yates shuffle on an array of nodes: detach and reappend
             for (let i = pieces.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                // swap elements i and j in DOM
-                if (i !== j) swapNodes(pieces[i], pieces[j]);
-                // refresh list (because DOM changed)
-                pieces.splice(i,1, pieces[j]);
+                if (i !== j) {
+                    // swap DOM nodes
+                    const nodeA = pieces[i];
+                    const nodeB = pieces[j];
+                    const placeholder = document.createElement('div');
+                    nodeA.parentNode.replaceChild(placeholder, nodeA);
+                    nodeB.parentNode.replaceChild(nodeA, nodeB);
+                    placeholder.parentNode.replaceChild(nodeB, placeholder);
+                }
             }
             // reassign currentPos by DOM order
             Array.from(container.children).forEach((child, idx) => {
