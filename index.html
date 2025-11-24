@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>For You ❤️</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #ffeef8 0%, #ffe5f1 100%);
@@ -18,8 +13,9 @@
             color: #5a3a4a;
         }
 
+        /* Navigation */
         nav {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255,255,255,0.95);
             padding: 1rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
@@ -37,21 +33,12 @@
             gap: 1rem;
         }
 
-        .nav-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #d63384;
-        }
+        .nav-title { font-size: 1.5rem; font-weight: bold; color: #d63384; }
 
-        .nav-links {
-            display: none;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
+        /* hidden initially (so page names don't show while game is active) */
+        .nav-links { display: none; gap: 1rem; flex-wrap: wrap; }
 
-        .nav-links.show {
-            display: flex;
-        }
+        .nav-links.visible { display: flex; }
 
         .nav-btn {
             padding: 0.5rem 1.2rem;
@@ -62,31 +49,24 @@
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.3s;
+            opacity: 0.5;
+            pointer-events: none;
         }
 
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(214, 51, 132, 0.4);
+        .nav-btn.unlocked {
+            opacity: 1;
+            pointer-events: all;
         }
 
-        .nav-btn.active {
-            background: linear-gradient(135deg, #d63384 0%, #a02560 100%);
-        }
+        .nav-btn.unlocked:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(214,51,132,0.4); }
 
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
+        .nav-btn.active { background: linear-gradient(135deg, #d63384 0%, #a02560 100%); }
 
-        .page {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
+        /* Container */
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
 
-        .page.active {
-            display: block;
-        }
+        .page { display: none; animation: fadeIn 0.5s; }
+        .page.active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -102,397 +82,102 @@
             text-align: center;
         }
 
-        .game-section h2 {
-            color: #d63384;
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-        }
+        .game-section h2 { color: #d63384; margin-bottom: 1rem; font-size: 1.8rem; }
+        .game-section p { margin-bottom: 1.5rem; color: #6b4a5a; }
 
-        .game-section p {
-            margin-bottom: 1.5rem;
-            color: #6b4a5a;
-        }
-
-        .wins-tracker {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .win-heart {
-            font-size: 2rem;
-            opacity: 0.3;
-            transition: all 0.3s;
-        }
-
-        .win-heart.active {
-            opacity: 1;
-            animation: heartBeat 0.5s;
-        }
-
+        .wins-tracker { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .win-heart { font-size: 2rem; opacity: 0.3; transition: all 0.3s; }
+        .win-heart.active { opacity: 1; animation: heartBeat 0.5s; }
         @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
+            0%,100% { transform: scale(1); } 50% { transform: scale(1.3); }
         }
 
-        .game-board {
-            display: inline-block;
-            margin: 2rem auto;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 15px;
-        }
+        /* Dots & Boxes Game */
+        .game-board { display: inline-block; margin: 2rem auto; background: #fff; padding: 1rem; border-radius: 15px; }
+        .game-grid { display: grid; gap: 0; justify-content: center; }
 
-        #gameCanvas {
-            border: none;
-            cursor: pointer;
-            display: block;
-        }
+        .dot { width: 12px; height: 12px; background: #d63384; border-radius: 50%; }
+        .h-line, .v-line { background: #e0e0e0; cursor: pointer; transition: all 0.2s; }
+        .h-line { height: 4px; }
+        .v-line { width: 4px; }
+        .h-line:hover, .v-line:hover { background: #ff9ec5; }
+        .h-line.selected, .v-line.selected { background: #d63384; }
+        .h-line.ai-selected, .v-line.ai-selected { background: #6c757d; }
 
-        .game-status {
-            margin-top: 1.5rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #d63384;
-            min-height: 30px;
-        }
+        .box { position: relative; width: 60px; height: 60px; }
+        .box-fill { position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px; border-radius: 5px; display:flex; align-items:center; justify-content:center; font-size: 2rem; animation: boxFill 0.3s; }
+        @keyframes boxFill { from { transform: scale(0); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+        .box-fill.player { background: linear-gradient(135deg, #ff6b9d 0%, #d63384 100%); }
+        .box-fill.ai { background: linear-gradient(135deg, #6c757d 0%, #495057 100%); }
 
-        .game-controls {
-            margin-top: 1rem;
-        }
+        .game-status { margin-top: 1.5rem; font-size: 1.2rem; font-weight: bold; color: #d63384; }
+        .game-controls { margin-top: 1rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+        .btn { padding: 0.8rem 2rem; border:none; border-radius:25px; font-size:1rem; cursor:pointer; transition:all 0.3s; font-weight:600; }
+        .btn-primary { background: linear-gradient(135deg,#ff6b9d 0%,#d63384 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(214,51,132,0.4); }
 
-        .btn {
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-        }
+        /* Page 1 - Images & Messages */
+        .image-message-grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        .image-message-card { background: white; border-radius: 20px; overflow:hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .image-container { width: 100%; max-width: 500px; margin: 0 auto; }
+        .image-container img { width: 100%; height: auto; display:block; }
+        .message-container { padding: 1.5rem; max-height: 300px; overflow-y: auto; }
+        .message-text { line-height: 1.6; color: #5a3a4a; }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #ff6b9d 0%, #d63384 100%);
-            color: white;
-        }
+        /* Page 2 - Games */
+        .games-grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); }
+        .game-card { background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align:center; }
+        .game-card h3 { color: #d63384; margin-bottom: 1rem; }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(214, 51, 132, 0.4);
-        }
+        /* Jigsaw Puzzle */
+        .puzzle-container { display: grid; gap: 2px; max-width: 400px; margin: 1rem auto; background: #ddd; padding: 2px; border-radius: 10px; grid-template-columns: repeat(3, 1fr); }
+        .puzzle-piece { aspect-ratio: 1; cursor: pointer; transition: all 0.2s; border-radius: 5px; background-size: 300% 300%; background-image: url('https://via.placeholder.com/900x1599/ffd6e8/ffffff?text=Our+Memory'); }
+        .puzzle-piece:hover { opacity: 0.9; transform: scale(0.99); }
+        .puzzle-piece.selected { border: 3px solid #d63384; }
 
-        /* Pages Styles */
-        .image-message-grid {
-            display: grid;
-            gap: 2rem;
-        }
+        /* Reaction Game */
+        .reaction-game { position: relative; height: 150px; background: linear-gradient(135deg,#ffe5f1 0%,#ffeef8 100%); border-radius: 15px; margin: 1rem 0; overflow: hidden; }
+        .heart-slider { position: absolute; top: 50%; transform: translateY(-50%); font-size: 3rem; transition: left 0.05s linear; left: 0%; }
+        .target-zone { position:absolute; top:0; bottom:0; width:80px; left:50%; transform: translateX(-50%); background: rgba(214,51,132,0.2); border-left:2px dashed #d63384; border-right:2px dashed #d63384; }
 
-        .image-message-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
+        /* Page 3 - Notepad */
+        .notepad-container { background: white; border-radius: 20px; padding:2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 800px; margin:0 auto; }
+        .notepad-header { text-align:center; color:#d63384; margin-bottom:1.5rem; }
+        .notepad-textarea { width:100%; min-height:400px; padding:1.5rem; border:2px solid #ffe5f1; border-radius:15px; font-size:1rem; line-height:1.8; resize:vertical; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg,#fffbfd 0%, #ffeef8 100%); }
+        .notepad-textarea:focus { outline: none; border-color: #d63384; }
+        .notepad-controls { margin-top:1.5rem; text-align:center; }
 
-        .image-container {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-        }
+        /* Page 4 - Memory Lane */
+        .timeline { max-width: 600px; margin: 0 auto; }
+        .timeline-item { background: white; border-radius: 20px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s; }
+        .timeline-item:hover { transform: translateY(-5px); box-shadow: 0 6px 25px rgba(0,0,0,0.15); }
+        .timeline-date { color: #d63384; font-weight: bold; margin-bottom: 0.5rem; }
+        .timeline-image { width:100%; border-radius:15px; margin-bottom:1rem; }
+        .timeline-caption { color:#5a3a4a; line-height:1.6; }
+        .timeline-note { margin-top:1rem; padding:1rem; background:#ffeef8; border-radius:10px; font-style:italic; }
 
-        .image-container img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
+        .add-note-btn { margin-top:0.5rem; padding:0.5rem 1rem; background:#ff6b9d; color:white; border:none; border-radius:15px; cursor:pointer; font-size:0.9rem; }
 
-        .message-container {
-            padding: 1.5rem;
-            max-height: 300px;
-            overflow-y: auto;
-        }
+        /* Fullscreen Image Viewer */
+        .fullscreen-viewer { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index:1000; justify-content:center; align-items:center; animation: fadeIn 0.3s; }
+        .fullscreen-viewer.active { display:flex; }
+        .fullscreen-image { max-width:90%; max-height:90%; border-radius:10px; }
+        .close-viewer { position:absolute; top:20px; right:20px; font-size:2rem; color:white; cursor:pointer; background: rgba(214,51,132,0.8); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
 
-        .message-container::-webkit-scrollbar {
-            width: 8px;
-        }
+        /* Modal */
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
+        .modal.active { display:flex; }
+        .modal-content { background:white; padding:2rem; border-radius:20px; text-align:center; max-width:400px; animation: slideUp 0.3s; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity:0 } to { transform: translateY(0); opacity:1 } }
+        .modal-content h2 { color:#d63384; margin-bottom:1rem; }
 
-        .message-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .message-container::-webkit-scrollbar-thumb {
-            background: #d63384;
-            border-radius: 10px;
-        }
-
-        .message-text {
-            line-height: 1.6;
-            color: #5a3a4a;
-        }
-
-        .games-grid {
-            display: grid;
-            gap: 2rem;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        }
-
-        .game-card {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .game-card h3 {
-            color: #d63384;
-            margin-bottom: 1rem;
-        }
-
-        .puzzle-container {
-            display: grid;
-            gap: 2px;
-            max-width: 400px;
-            margin: 1rem auto;
-            background: #ddd;
-            padding: 2px;
-            border-radius: 10px;
-        }
-
-        .puzzle-piece {
-            aspect-ratio: 1;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-radius: 5px;
-            background-size: 300% 300%;
-        }
-
-        .puzzle-piece:hover {
-            opacity: 0.8;
-            transform: scale(0.95);
-        }
-
-        .puzzle-piece.selected {
-            border: 3px solid #d63384;
-        }
-
-        .reaction-game {
-            position: relative;
-            height: 150px;
-            background: linear-gradient(135deg, #ffe5f1 0%, #ffeef8 100%);
-            border-radius: 15px;
-            margin: 1rem 0;
-            overflow: hidden;
-        }
-
-        .heart-slider {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 3rem;
-            transition: left 0.05s linear;
-        }
-
-        .target-zone {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(214, 51, 132, 0.2);
-            border-left: 2px dashed #d63384;
-            border-right: 2px dashed #d63384;
-        }
-
-        .notepad-container {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .notepad-header {
-            text-align: center;
-            color: #d63384;
-            margin-bottom: 1.5rem;
-        }
-
-        .notepad-textarea {
-            width: 100%;
-            min-height: 400px;
-            padding: 1.5rem;
-            border: 2px solid #ffe5f1;
-            border-radius: 15px;
-            font-size: 1rem;
-            line-height: 1.8;
-            resize: vertical;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #fffbfd 0%, #ffeef8 100%);
-        }
-
-        .notepad-textarea:focus {
-            outline: none;
-            border-color: #d63384;
-        }
-
-        .notepad-controls {
-            margin-top: 1.5rem;
-            text-align: center;
-        }
-
-        .timeline {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .timeline-item {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .timeline-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
-        }
-
-        .timeline-date {
-            color: #d63384;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-image {
-            width: 100%;
-            border-radius: 15px;
-            margin-bottom: 1rem;
-        }
-
-        .timeline-caption {
-            color: #5a3a4a;
-            line-height: 1.6;
-        }
-
-        .timeline-note {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #ffeef8;
-            border-radius: 10px;
-            font-style: italic;
-        }
-
-        .add-note-btn {
-            margin-top: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: #ff6b9d;
-            color: white;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .fullscreen-viewer {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .fullscreen-viewer.active {
-            display: flex;
-        }
-
-        .fullscreen-image {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 10px;
-        }
-
-        .close-viewer {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 2rem;
-            color: white;
-            cursor: pointer;
-            background: rgba(214, 51, 132, 0.8);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 400px;
-            margin: 0 1rem;
-            animation: slideUp 0.3s;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-content h2 {
-            color: #d63384;
-            margin-bottom: 1rem;
-        }
-
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .nav-content {
-                justify-content: center;
-            }
-
-            .nav-title {
-                font-size: 1.2rem;
-            }
-
-            .game-section {
-                padding: 1rem;
-            }
-
-            .game-section h2 {
-                font-size: 1.4rem;
-            }
+            .nav-title { font-size: 1.2rem; }
+            .dot { width: 10px; height: 10px; }
+            .h-line { height: 3px; }
+            .v-line { width: 3px; }
+            .box { width: 44px; height: 44px; }
         }
     </style>
 </head>
@@ -501,19 +186,20 @@
         <div class="nav-content">
             <div class="nav-title">💕 For You</div>
             <div class="nav-links" id="navLinks">
-                <button class="nav-btn" onclick="showPage('page1')">Images & Messages</button>
-                <button class="nav-btn" onclick="showPage('page2')">Lovely Games</button>
-                <button class="nav-btn" onclick="showPage('page3')">Your Notepad</button>
-                <button class="nav-btn" onclick="showPage('page4')">Memory Lane</button>
+                <button class="nav-btn" data-page="page1">Images & Messages</button>
+                <button class="nav-btn" data-page="page2">Lovely Games</button>
+                <button class="nav-btn" data-page="page3">Your Notepad</button>
+                <button class="nav-btn" data-page="page4">Memory Lane</button>
             </div>
         </div>
     </nav>
 
     <div class="container">
+        <!-- Game Section -->
         <div class="game-section" id="gameSection">
             <h2>🎮 Unlock the Pages</h2>
             <p>Win 3 games consecutively to unlock all pages!</p>
-            
+
             <div class="wins-tracker">
                 <span class="win-heart" id="heart1">❤️</span>
                 <span class="win-heart" id="heart2">❤️</span>
@@ -521,7 +207,7 @@
             </div>
 
             <div class="game-board">
-                <canvas id="gameCanvas" width="400" height="400"></canvas>
+                <div class="game-grid" id="gameGrid"></div>
             </div>
 
             <div class="game-status" id="gameStatus">Your turn!</div>
@@ -530,6 +216,7 @@
             </div>
         </div>
 
+        <!-- Page 1 -->
         <div class="page" id="page1">
             <div class="image-message-grid">
                 <div class="image-message-card">
@@ -537,9 +224,7 @@
                         <img src="https://via.placeholder.com/400x711/ffb6d9/ffffff?text=Memory+1" alt="Memory 1">
                     </div>
                     <div class="message-container">
-                        <p class="message-text">
-                            Every moment with you feels like a dream come true. Your smile lights up my world in ways I never knew possible. I cherish every laugh we share, every conversation that goes deep into the night, and every quiet moment when we're just together. You make everything better, and I'm so grateful to have you in my life. ❤️
-                        </p>
+                        <p class="message-text">Every moment with you feels like a dream come true. Your smile lights up my world in ways I never knew possible. I cherish every laugh we share, every conversation that goes deep into the night, and every quiet moment when we're just together. You make everything better, and I'm so grateful to have you in my life. ❤️</p>
                     </div>
                 </div>
 
@@ -548,9 +233,7 @@
                         <img src="https://via.placeholder.com/400x711/ffd6e8/ffffff?text=Memory+2" alt="Memory 2">
                     </div>
                     <div class="message-container">
-                        <p class="message-text">
-                            I love how you understand me without words, how you know when I need a hug or when I need space. Your kindness and warmth make every day special. The way you care about the little things shows me how beautiful your heart is. Thank you for being you, and for choosing to share your life with me. 💕
-                        </p>
+                        <p class="message-text">I love how you understand me without words, how you know when I need a hug or when I need space. Your kindness and warmth make every day special. The way you care about the little things shows me how beautiful your heart is. Thank you for being you, and for choosing to share your life with me. 💕</p>
                     </div>
                 </div>
 
@@ -559,27 +242,28 @@
                         <img src="https://via.placeholder.com/400x711/ffe5f1/ffffff?text=Memory+3" alt="Memory 3">
                     </div>
                     <div class="message-container">
-                        <p class="message-text">
-                            When I think about the future, I see you there beside me through it all. Every adventure, every challenge, every beautiful ordinary day - I want to experience them all with you. You're not just my partner, you're my best friend, my confidant, and my greatest blessing. Here's to all our tomorrows together. 🌟
-                        </p>
+                        <p class="message-text">When I think about the future, I see you there beside me through it all. Every adventure, every challenge, every beautiful ordinary day - I want to experience them all with you. You're not just my partner, you're my best friend, my confidant, and my greatest blessing. Here's to all our tomorrows together. 🌟</p>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Page 2 -->
         <div class="page" id="page2">
             <div class="games-grid">
                 <div class="game-card">
                     <h3>🧩 Photo Puzzle</h3>
                     <p>Piece together our memory!</p>
                     <div class="puzzle-container" id="puzzleContainer"></div>
-                    <button class="btn btn-primary" onclick="shufflePuzzle()">Shuffle</button>
+                    <div style="margin-top:12px;">
+                        <button class="btn btn-primary" onclick="shufflePuzzle()">Shuffle</button>
+                    </div>
                 </div>
 
                 <div class="game-card">
                     <h3>💖 Heart Timing</h3>
                     <p>Tap when the heart reaches the center!</p>
-                    <div class="reaction-game">
+                    <div class="reaction-game" id="reactionGame">
                         <div class="target-zone"></div>
                         <div class="heart-slider" id="heartSlider">❤️</div>
                     </div>
@@ -589,6 +273,7 @@
             </div>
         </div>
 
+        <!-- Page 3 -->
         <div class="page" id="page3">
             <div class="notepad-container">
                 <div class="notepad-header">
@@ -602,230 +287,560 @@
             </div>
         </div>
 
+        <!-- Page 4 -->
         <div class="page" id="page4">
-            <h2 style="text-align: center; color: #d63384; margin-bottom: 2rem;">💝 Our Memory Lane</h2>
-            <div class="timeline">
-                <div class="timeline-item" onclick="openViewer(this)" data-img="https://via.placeholder.com/400x711/ffccdd/ffffff?text=Our+First+Date">
+            <h2 style="text-align:center; color:#d63384; margin-bottom:2rem;">💝 Our Memory Lane</h2>
+            <div class="timeline" id="timeline">
+                <div class="timeline-item" data-img="https://via.placeholder.com/400x711/ffccdd/ffffff?text=Our+First+Date">
                     <div class="timeline-date">January 2024</div>
                     <img class="timeline-image" src="https://via.placeholder.com/400x711/ffccdd/ffffff?text=Our+First+Date" alt="Memory">
-                    <div class="timeline-caption">
-                        The day we first met - I'll never forget how nervous and excited I was!
-                    </div>
-                    <button class="add-note-btn" onclick="event.stopPropagation(); addPersonalNote(this)">Add Your Note</button>
+                    <div class="timeline-caption">The day we first met - I'll never forget how nervous and excited I was!</div>
+                    <button class="add-note-btn" onclick="addPersonalNote(this)">Add Your Note</button>
                 </div>
 
-                <div class="timeline-item" onclick="openViewer(this)" data-img="https://via.placeholder.com/400x711/ffd6e8/ffffff?text=Adventure+Together">
+                <div class="timeline-item" data-img="https://via.placeholder.com/400x711/ffd6e8/ffffff?text=Adventure+Together">
                     <div class="timeline-date">March 2024</div>
                     <img class="timeline-image" src="https://via.placeholder.com/400x711/ffd6e8/ffffff?text=Adventure+Together" alt="Memory">
-                    <div class="timeline-caption">
-                        Our little adventure that turned into the best day ever.
-                    </div>
-                    <button class="add-note-btn" onclick="event.stopPropagation(); addPersonalNote(this)">Add Your Note</button>
+                    <div class="timeline-caption">Our little adventure that turned into the best day ever.</div>
+                    <button class="add-note-btn" onclick="addPersonalNote(this)">Add Your Note</button>
                 </div>
 
-                <div class="timeline-item" onclick="openViewer(this)" data-img="https://via.placeholder.com/400x711/ffe5f1/ffffff?text=Special+Moment">
+                <div class="timeline-item" data-img="https://via.placeholder.com/400x711/ffe5f1/ffffff?text=Special+Moment">
                     <div class="timeline-date">June 2024</div>
                     <img class="timeline-image" src="https://via.placeholder.com/400x711/ffe5f1/ffffff?text=Special+Moment" alt="Memory">
-                    <div class="timeline-caption">
-                        This moment made me realize how lucky I am to have you.
-                    </div>
-                    <button class="add-note-btn" onclick="event.stopPropagation(); addPersonalNote(this)">Add Your Note</button>
+                    <div class="timeline-caption">This moment made me realize how lucky I am to have you.</div>
+                    <button class="add-note-btn" onclick="addPersonalNote(this)">Add Your Note</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="fullscreen-viewer" id="fullscreenViewer" onclick="closeViewer()">
-        <div class="close-viewer">×</div>
+    <!-- Fullscreen Viewer -->
+    <div class="fullscreen-viewer" id="fullscreenViewer">
+        <div class="close-viewer" onclick="closeViewer()">×</div>
         <img class="fullscreen-image" id="fullscreenImage" src="" alt="Memory">
     </div>
 
+    <!-- Modal -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h2 id="modalTitle"></h2>
-            <p id="modalMessage"></p>
+            <h2 id="modalTitle">🎉 Congratulations!</h2>
+            <p id="modalMessage">You've unlocked all pages!</p>
             <button class="btn btn-primary" onclick="closeModal()">Close</button>
         </div>
     </div>
 
     <script>
-        // Configuration
-        var CHANCE_TO_MISTAKE = 0.35;
-        var GRID_SIZE = 3;
-        var CELL_SIZE = 120;
-        var DOT_RADIUS = 8;
-        var LINE_WIDTH = 6;
+        // ===== CONFIGURATION =====
+        const CHANCE_TO_MISTAKE = 0.35; // Adjust AI difficulty (0.1 = hard, 0.6 = easy)
+        const GRID_SIZE = 4; // 4x4 dots -> 3x3 boxes
 
-        // Game state
-        var canvas, ctx;
-        var hLines = [];
-        var vLines = [];
-        var boxes = [];
-        var scores = {player: 0, ai: 0};
-        var currentPlayer = 'player';
-        var consecutiveWins = 0;
-        var gameActive = true;
+        // ===== STATE =====
+        let currentPlayer = 'player';
+        let consecutiveWins = 0;
+        let grid = { hLines: [], vLines: [], boxes: [] };
+        let scores = { player: 0, ai: 0 };
 
+        // ===== Dots & Boxes INIT =====
         function initGame() {
-            canvas = document.getElementById('gameCanvas');
-            ctx = canvas.getContext('2d');
-            
-            hLines = [];
-            vLines = [];
-            boxes = [];
-            
-            for (var i = 0; i < GRID_SIZE + 1; i++) {
-                hLines[i] = [];
-                for (var j = 0; j < GRID_SIZE; j++) {
-                    hLines[i][j] = 0;
-                }
-            }
-            
-            for (var i = 0; i < GRID_SIZE; i++) {
-                vLines[i] = [];
-                boxes[i] = [];
-                for (var j = 0; j < GRID_SIZE + 1; j++) {
-                    vLines[i][j] = 0;
-                }
-                for (var j = 0; j < GRID_SIZE; j++) {
-                    boxes[i][j] = 0;
-                }
-            }
-            
-            scores = {player: 0, ai: 0};
+            const gameGrid = document.getElementById('gameGrid');
+            gameGrid.innerHTML = '';
+
+            // initialize arrays
+            grid.hLines = Array.from({length: GRID_SIZE}, () => Array.from({length: GRID_SIZE - 1}, () => 0));
+            grid.vLines = Array.from({length: GRID_SIZE - 1}, () => Array.from({length: GRID_SIZE}, () => 0));
+            grid.boxes  = Array.from({length: GRID_SIZE - 1}, () => Array.from({length: GRID_SIZE - 1}, () => 0));
+            scores = { player: 0, ai: 0 };
             currentPlayer = 'player';
-            gameActive = true;
-            
-            canvas.onclick = handleClick;
-            drawBoard();
+
+            const totalRows = GRID_SIZE * 2 - 1;
+            const totalCols = GRID_SIZE * 2 - 1;
+            gameGrid.style.gridTemplateColumns = `repeat(${totalCols}, auto)`;
+            gameGrid.style.gridTemplateRows = `repeat(${totalRows}, auto)`;
+
+            for (let row = 0; row < totalRows; row++) {
+                for (let col = 0; col < totalCols; col++) {
+                    const el = document.createElement('div');
+
+                    if (row % 2 === 0 && col % 2 === 0) {
+                        el.className = 'dot';
+                    } else if (row % 2 === 0) {
+                        // horizontal
+                        el.className = 'h-line';
+                        const r = Math.floor(row / 2);
+                        const c = Math.floor((col - 1) / 2);
+                        el.dataset.type = 'h';
+                        el.dataset.row = r;
+                        el.dataset.col = c;
+                        el.onclick = () => makeMove('h', r, c);
+                    } else if (col % 2 === 0) {
+                        // vertical
+                        el.className = 'v-line';
+                        const r = Math.floor((row - 1) / 2);
+                        const c = Math.floor(col / 2);
+                        el.dataset.type = 'v';
+                        el.dataset.row = r;
+                        el.dataset.col = c;
+                        el.onclick = () => makeMove('v', r, c);
+                    } else {
+                        // box - give size for better visuals
+                        el.className = 'box';
+                        const r = Math.floor((row - 1) / 2);
+                        const c = Math.floor((col - 1) / 2);
+                        el.dataset.row = r;
+                        el.dataset.col = c;
+                    }
+                    gameGrid.appendChild(el);
+                }
+            }
+
             updateStatus();
+            clearVisualSelections();
         }
 
-        function drawBoard() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw dots
-            ctx.fillStyle = '#d63384';
-            for (var i = 0; i < GRID_SIZE + 1; i++) {
-                for (var j = 0; j < GRID_SIZE + 1; j++) {
-                    ctx.beginPath();
-                    ctx.arc(50 + j * CELL_SIZE, 50 + i * CELL_SIZE, DOT_RADIUS, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-            
-            // Draw horizontal lines
-            for (var i = 0; i < GRID_SIZE + 1; i++) {
-                for (var j = 0; j < GRID_SIZE; j++) {
-                    if (hLines[i][j] === 0) {
-                        ctx.strokeStyle = '#e0e0e0';
-                    } else if (hLines[i][j] === 1) {
-                        ctx.strokeStyle = '#d63384';
-                    } else {
-                        ctx.strokeStyle = '#6c757d';
-                    }
-                    ctx.lineWidth = LINE_WIDTH;
-                    ctx.beginPath();
-                    ctx.moveTo(50 + j * CELL_SIZE + DOT_RADIUS, 50 + i * CELL_SIZE);
-                    ctx.lineTo(50 + (j + 1) * CELL_SIZE - DOT_RADIUS, 50 + i * CELL_SIZE);
-                    ctx.stroke();
-                }
-            }
-            
-            // Draw vertical lines
-            for (var i = 0; i < GRID_SIZE; i++) {
-                for (var j = 0; j < GRID_SIZE + 1; j++) {
-                    if (vLines[i][j] === 0) {
-                        ctx.strokeStyle = '#e0e0e0';
-                    } else if (vLines[i][j] === 1) {
-                        ctx.strokeStyle = '#d63384';
-                    } else {
-                        ctx.strokeStyle = '#6c757d';
-                    }
-                    ctx.lineWidth = LINE_WIDTH;
-                    ctx.beginPath();
-                    ctx.moveTo(50 + j * CELL_SIZE, 50 + i * CELL_SIZE + DOT_RADIUS);
-                    ctx.lineTo(50 + j * CELL_SIZE, 50 + (i + 1) * CELL_SIZE - DOT_RADIUS);
-                    ctx.stroke();
-                }
-            }
-            
-            // Draw filled boxes
-            for (var i = 0; i < GRID_SIZE; i++) {
-                for (var j = 0; j < GRID_SIZE; j++) {
-                    if (boxes[i][j] === 1) {
-                        ctx.fillStyle = 'rgba(214, 51, 132, 0.3)';
-                        ctx.fillRect(50 + j * CELL_SIZE + 10, 50 + i * CELL_SIZE + 10, CELL_SIZE - 20, CELL_SIZE - 20);
-                        ctx.font = '40px Arial';
-                        ctx.fillStyle = '#d63384';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.fillText('💖', 50 + j * CELL_SIZE + CELL_SIZE / 2, 50 + i * CELL_SIZE + CELL_SIZE / 2);
-                    } else if (boxes[i][j] === 2) {
-                        ctx.fillStyle = 'rgba(108, 117, 125, 0.3)';
-                        ctx.fillRect(50 + j * CELL_SIZE + 10, 50 + i * CELL_SIZE + 10, CELL_SIZE - 20, CELL_SIZE - 20);
-                        ctx.font = '40px Arial';
-                        ctx.fillStyle = '#6c757d';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.fillText('🤖', 50 + j * CELL_SIZE + CELL_SIZE / 2, 50 + i * CELL_SIZE + CELL_SIZE / 2);
-                    }
-                }
-            }
-        }
-
-        function handleClick(e) {
-            if (!gameActive || currentPlayer !== 'player') return;
-            
-            var rect = canvas.getBoundingClientRect();
-            var x = e.clientX - rect.left;
-            var y = e.clientY - rect.top;
-            
-            // Check horizontal lines
-            for (var i = 0; i < GRID_SIZE + 1; i++) {
-                for (var j = 0; j < GRID_SIZE; j++) {
-                    var lineY = 50 + i * CELL_SIZE;
-                    var lineX1 = 50 + j * CELL_SIZE;
-                    var lineX2 = 50 + (j + 1) * CELL_SIZE;
-                    
-                    if (hLines[i][j] === 0 && Math.abs(y - lineY) < 15 && x > lineX1 && x < lineX2) {
-                        makeMove('h', i, j);
-                        return;
-                    }
-                }
-            }
-            
-            // Check vertical lines
-            for (var i = 0; i < GRID_SIZE; i++) {
-                for (var j = 0; j < GRID_SIZE + 1; j++) {
-                    var lineX = 50 + j * CELL_SIZE;
-                    var lineY1 = 50 + i * CELL_SIZE;
-                    var lineY2 = 50 + (i + 1) * CELL_SIZE;
-                    
-                    if (vLines[i][j] === 0 && Math.abs(x - lineX) < 15 && y > lineY1 && y < lineY2) {
-                        makeMove('v', i, j);
-                        return;
-                    }
-                }
-            }
+        function clearVisualSelections(){
+            // remove any selected classes left on grid lines/boxes
+            document.querySelectorAll('.h-line, .v-line').forEach(n => {
+                n.classList.remove('selected','ai-selected');
+            });
+            document.querySelectorAll('.box .box-fill').forEach(n => n.remove());
         }
 
         function makeMove(type, row, col) {
-            var playerCode = currentPlayer === 'player' ? 1 : 2;
-            var completedBox = false;
-            
-            if (type === 'h') {
-                hLines[row][col] = playerCode;
-                
-                if (row > 0 && isBoxComplete(row - 1, col) && boxes[row - 1][col] === 0) {
-                    boxes[row - 1][col] = playerCode;
-                    scores[currentPlayer]++;
-                    completedBox = true;
-                }
-                if (row < GRID_SIZE && isBoxComplete(row, col) && boxes[row][col] === 0) {
-                    boxes[row][col] = playerCode;
-                    scores[currentPlayer]++;
-                    completedBox = true;
-                }
+            if (currentPlayer !== 'player') return;
+            if (type === 'h' && grid.hLines[row][col] !== 0) return;
+            if (type === 'v' && grid.vLines[row][col] !== 0) return;
+
+            const completedBox = applyMove(type, row, col, 'player');
+
+            if (!completedBox) {
+                currentPlayer = 'ai';
+                updateStatus();
+                setTimeout(aiMove, 500);
             } else {
-                vLines[row][col] = playerCode;
+                updateStatus();
+                checkGameOver();
+            }
+        }
+
+        function applyMove(type, row, col, player) {
+            const playerCode = player === 'player' ? 1 : 2;
+            if (type === 'h') grid.hLines[row][col] = playerCode;
+            else grid.vLines[row][col] = playerCode;
+
+            // update visual
+            const el = document.querySelector(`[data-type="${type}"][data-row="${row}"][data-col="${col}"]`);
+            if (el) el.classList.add(player === 'player' ? 'selected' : 'ai-selected');
+
+            // check boxes affected
+            let completedBox = false;
+            const boxesToCheck = getAffectedBoxes(type, row, col);
+            boxesToCheck.forEach(([br, bc]) => {
+                if (isBoxComplete(br, bc) && grid.boxes[br][bc] === 0) {
+                    grid.boxes[br][bc] = playerCode;
+                    scores[player]++;
+                    fillBox(br, bc, player);
+                    completedBox = true;
+                }
+            });
+
+            return completedBox;
+        }
+
+        function getAffectedBoxes(type, row, col) {
+            const boxes = [];
+            if (type === 'h') {
+                if (row > 0) boxes.push([row - 1, col]);
+                if (row < GRID_SIZE - 1) boxes.push([row, col]);
+            } else {
+                if (col > 0) boxes.push([row, col - 1]);
+                if (col < GRID_SIZE - 1) boxes.push([row, col]);
+            }
+            return boxes;
+        }
+
+        function isBoxComplete(row, col) {
+            return grid.hLines[row][col] !== 0 &&
+                   grid.hLines[row + 1][col] !== 0 &&
+                   grid.vLines[row][col] !== 0 &&
+                   grid.vLines[row][col + 1] !== 0;
+        }
+
+        function fillBox(row, col, player) {
+            const boxEl = document.querySelector(`.box[data-row="${row}"][data-col="${col}"]`);
+            if (boxEl) {
+                const fill = document.createElement('div');
+                fill.className = `box-fill ${player}`;
+                fill.textContent = player === 'player' ? '💖' : '🤖';
+                boxEl.appendChild(fill);
+            }
+        }
+
+        // ===== AI =====
+        function aiMove() {
+            // If no moves available, return
+            const available = getAvailableMoves();
+            if (available.length === 0) {
+                checkGameOver();
+                return;
+            }
+
+            if (Math.random() < CHANCE_TO_MISTAKE) {
+                makeRandomMove();
+            } else {
+                makeBestMove();
+            }
+        }
+
+        function makeRandomMove() {
+            const available = getAvailableMoves();
+            if (available.length === 0) return;
+            const move = available[Math.floor(Math.random() * available.length)];
+            const completedBox = applyMove(move.type, move.row, move.col, 'ai');
+            if (!completedBox) currentPlayer = 'player';
+            updateStatus();
+            checkGameOver();
+        }
+
+        function makeBestMove() {
+            const available = getAvailableMoves();
+            if (available.length === 0) return;
+
+            // 1) complete any box
+            for (const move of available) {
+                if (wouldCompleteBox(move.type, move.row, move.col)) {
+                    const completedBox = applyMove(move.type, move.row, move.col, 'ai');
+                    if (!completedBox) currentPlayer = 'player';
+                    updateStatus();
+                    checkGameOver();
+                    return;
+                }
+            }
+
+            // 2) safe moves (avoid giving opponent a box)
+            const safeMoves = available.filter(move => !wouldGiveOpponentBox(move.type, move.row, move.col));
+            const move = safeMoves.length > 0 ? safeMoves[Math.floor(Math.random() * safeMoves.length)] : available[Math.floor(Math.random() * available.length)];
+
+            const completedBox = applyMove(move.type, move.row, move.col, 'ai');
+            if (!completedBox) currentPlayer = 'player';
+            updateStatus();
+            checkGameOver();
+        }
+
+        function getAvailableMoves() {
+            const moves = [];
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE - 1; c++) {
+                    if (grid.hLines[r][c] === 0) moves.push({ type: 'h', row: r, col: c });
+                }
+            }
+            for (let r = 0; r < GRID_SIZE - 1; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (grid.vLines[r][c] === 0) moves.push({ type: 'v', row: r, col: c });
+                }
+            }
+            return moves;
+        }
+
+        function wouldCompleteBox(type, row, col) {
+            const temp = JSON.parse(JSON.stringify(grid));
+            if (type === 'h') temp.hLines[row][col] = 2; else temp.vLines[row][col] = 2;
+            const boxes = getAffectedBoxes(type, row, col);
+            return boxes.some(([br, bc]) => {
+                if (temp.boxes[br][bc] !== 0) return false;
+                return temp.hLines[br][bc] !== 0 &&
+                       temp.hLines[br + 1][bc] !== 0 &&
+                       temp.vLines[br][bc] !== 0 &&
+                       temp.vLines[br][bc + 1] !== 0;
+            });
+        }
+
+        function wouldGiveOpponentBox(type, row, col) {
+            const temp = JSON.parse(JSON.stringify(grid));
+            if (type === 'h') temp.hLines[row][col] = 2; else temp.vLines[row][col] = 2;
+            const boxes = getAffectedBoxes(type, row, col);
+            return boxes.some(([br, bc]) => {
+                if (temp.boxes[br][bc] !== 0) return false;
+                let edges = 0;
+                if (temp.hLines[br][bc] !== 0) edges++;
+                if (temp.hLines[br + 1][bc] !== 0) edges++;
+                if (temp.vLines[br][bc] !== 0) edges++;
+                if (temp.vLines[br][bc + 1] !== 0) edges++;
+                return edges === 3;
+            });
+        }
+
+        function updateStatus() {
+            const status = document.getElementById('gameStatus');
+            if (currentPlayer === 'player') status.textContent = `Your turn! (You: ${scores.player} | AI: ${scores.ai})`;
+            else status.textContent = `AI is thinking... (You: ${scores.player} | AI: ${scores.ai})`;
+        }
+
+        function checkGameOver() {
+            const totalBoxes = (GRID_SIZE - 1) * (GRID_SIZE - 1);
+            if (scores.player + scores.ai === totalBoxes) {
+                setTimeout(() => {
+                    if (scores.player > scores.ai) {
+                        consecutiveWins++;
+                        updateWinHearts();
+                        if (consecutiveWins >= 3) {
+                            unlockPages();
+                            showModal('🎉 All Pages Unlocked!', 'Amazing! You won 3 games in a row! All pages are now accessible. Enjoy! ❤️');
+                        } else {
+                            showModal('🎊 You Won!', `Great job! Win ${3 - consecutiveWins} more in a row to unlock all pages!`);
+                            setTimeout(resetGame, 1200);
+                        }
+                    } else {
+                        consecutiveWins = 0;
+                        updateWinHearts();
+                        showModal('😔 AI Won', "Don't give up! Try again to start your winning streak!");
+                        setTimeout(resetGame, 1200);
+                    }
+                }, 500);
+            }
+        }
+
+        function updateWinHearts() {
+            for (let i = 1; i <= 3; i++) {
+                const heart = document.getElementById(`heart${i}`);
+                if (i <= consecutiveWins) heart.classList.add('active'); else heart.classList.remove('active');
+            }
+        }
+
+        function unlockPages() {
+            // show nav links and mark unlocked
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.add('visible');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.add('unlocked'));
+            // hide game section
+            const gameSection = document.getElementById('gameSection');
+            if (gameSection) gameSection.style.display = 'none';
+            // open first page
+            showPage('page1');
+        }
+
+        function resetGame() {
+            // reset only the board (not consecutiveWins)
+            initGame();
+        }
+
+        // ===== NAVIGATION =====
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            const page = document.getElementById(pageId);
+            if (page) page.classList.add('active');
+            const navButton = document.querySelector(`[data-page="${pageId}"]`);
+            if (navButton) navButton.classList.add('active');
+        }
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.classList.contains('unlocked')) showPage(btn.dataset.page);
+            });
+        });
+
+        // ===== MODAL =====
+        function showModal(title, message) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('modal').classList.add('active');
+        }
+        function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+        // ===== JIGSAW PUZZLE =====
+        let puzzlePieces = [];
+        let selectedPiece = null;
+
+        function initPuzzle() {
+            const container = document.getElementById('puzzleContainer');
+            container.innerHTML = ''; // clear duplicates
+            puzzlePieces = [];
+
+            // create 9 pieces (3x3)
+            for (let i = 0; i < 9; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'puzzle-piece';
+                piece.dataset.correctPos = i.toString();
+                piece.dataset.currentPos = i.toString();
+                // set background position (3x3 grid)
+                const row = Math.floor(i / 3);
+                const col = i % 3;
+                piece.style.backgroundPosition = `${col * 50}% ${row * 50}%`;
+                piece.onclick = () => selectPiece(piece);
+                container.appendChild(piece);
+                puzzlePieces.push(piece);
+            }
+        }
+
+        function selectPiece(piece) {
+            const container = document.getElementById('puzzleContainer');
+            if (!selectedPiece) {
+                selectedPiece = piece;
+                piece.classList.add('selected');
+            } else if (selectedPiece === piece) {
+                // unselect if same clicked
+                piece.classList.remove('selected');
+                selectedPiece = null;
+            } else {
+                // swap the two nodes in DOM
+                swapNodes(selectedPiece, piece);
+                // after swapping, update currentPos according to DOM order
+                Array.from(container.children).forEach((child, idx) => {
+                    child.dataset.currentPos = idx.toString();
+                });
+                // clear selection
+                selectedPiece.classList.remove('selected');
+                selectedPiece = null;
+                // update puzzlePieces reference
+                puzzlePieces = Array.from(container.children);
+                checkPuzzleComplete();
+            }
+        }
+
+        function swapNodes(nodeA, nodeB) {
+            const parent = nodeA.parentNode;
+            const siblingA = nodeA.nextSibling === nodeB ? nodeA : nodeA.nextSibling;
+            parent.insertBefore(nodeA, nodeB);
+            parent.insertBefore(nodeB, siblingA);
+        }
+
+        function shufflePuzzle() {
+            const container = document.getElementById('puzzleContainer');
+            const pieces = Array.from(container.children);
+            // Fisher-Yates shuffle
+            for (let i = pieces.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                // swap elements i and j in DOM
+                if (i !== j) swapNodes(pieces[i], pieces[j]);
+                // refresh list (because DOM changed)
+                pieces.splice(i,1, pieces[j]);
+            }
+            // reassign currentPos by DOM order
+            Array.from(container.children).forEach((child, idx) => {
+                child.dataset.currentPos = idx.toString();
+                child.onclick = () => selectPiece(child); // ensure handler intact
+            });
+            puzzlePieces = Array.from(container.children);
+            selectedPiece = null;
+        }
+
+        function checkPuzzleComplete() {
+            if (puzzlePieces.length === 0) return;
+            const complete = puzzlePieces.every(piece => piece.dataset.correctPos === piece.dataset.currentPos);
+            if (complete) showModal('🎉 Puzzle Complete!', 'You put our memory back together! How sweet! 💕');
+        }
+
+        // ===== REACTION GAME =====
+        let reactionInterval = null;
+        let heartPosition = 0;
+        let heartDirection = 1;
+        let reactionActive = false;
+
+        function startReaction() {
+            if (reactionActive) return;
+            reactionActive = true;
+            heartPosition = 0;
+            const heart = document.getElementById('heartSlider');
+            const btn = document.getElementById('reactionBtn');
+            const result = document.getElementById('reactionResult');
+
+            result.textContent = '';
+            btn.textContent = 'TAP NOW!';
+            btn.onclick = checkReactionTiming;
+
+            reactionInterval = setInterval(() => {
+                heartPosition += heartDirection * 3;
+                if (heartPosition >= 100) heartDirection = -1;
+                if (heartPosition <= 0) heartDirection = 1;
+                heart.style.left = heartPosition + '%';
+            }, 20);
+        }
+
+        function checkReactionTiming() {
+            if (!reactionActive) return;
+            clearInterval(reactionInterval);
+            reactionActive = false;
+
+            const result = document.getElementById('reactionResult');
+            const btn = document.getElementById('reactionBtn');
+
+            if (heartPosition >= 40 && heartPosition <= 60) {
+                result.textContent = '💖 Perfect! Our hearts are in sync! 💖';
+                result.style.color = '#d63384';
+            } else if (heartPosition >= 30 && heartPosition <= 70) {
+                result.textContent = '💕 Close! Almost perfect!';
+                result.style.color = '#ff6b9d';
+            } else {
+                result.textContent = '❤️ Try again! You can do it!';
+                result.style.color = '#ffa6c9';
+            }
+
+            btn.textContent = 'Start';
+            btn.onclick = startReaction;
+        }
+
+        // ===== NOTEPAD =====
+        function downloadNote() {
+            const text = document.getElementById('notepadText').value;
+            if (!text.trim()) {
+                showModal('Empty Note', 'Please write something first! 📝');
+                return;
+            }
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'my-note.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            showModal('💾 Downloaded!', 'Your note has been saved!');
+        }
+
+        // ===== TIMELINE =====
+        function addPersonalNote(btn) {
+            const item = btn.parentElement;
+            const existing = item.querySelector('.timeline-note');
+            if (existing) {
+                const newNote = prompt('Edit your note:', existing.textContent.replace('Your note: ', ''));
+                if (newNote !== null && newNote.trim()) existing.textContent = 'Your note: ' + newNote;
+            } else {
+                const note = prompt('Add your personal note to this memory:');
+                if (note && note.trim()) {
+                    const noteDiv = document.createElement('div');
+                    noteDiv.className = 'timeline-note';
+                    noteDiv.textContent = 'Your note: ' + note;
+                    item.insertBefore(noteDiv, btn);
+                }
+            }
+        }
+
+        // timeline image viewer
+        function initTimelineViewer() {
+            document.querySelectorAll('.timeline-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'BUTTON') {
+                        const img = item.dataset.img;
+                        document.getElementById('fullscreenImage').src = img;
+                        document.getElementById('fullscreenViewer').classList.add('active');
+                    }
+                });
+            });
+        }
+
+        function closeViewer() {
+            document.getElementById('fullscreenViewer').classList.remove('active');
+        }
+
+        // ===== INITIALIZE =====
+        window.onload = () => {
+            // keep nav hidden until unlocked
+            document.getElementById('navLinks').classList.remove('visible');
+
+            initGame();
+            initPuzzle();
+            initTimelineViewer();
+        };
+    </script>
+</body>
+</html>
