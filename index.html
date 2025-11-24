@@ -37,7 +37,6 @@
 
         /* hidden initially (so page names don't show while game is active) */
         .nav-links { display: none; gap: 1rem; flex-wrap: wrap; }
-
         .nav-links.visible { display: flex; }
 
         .nav-btn {
@@ -59,7 +58,6 @@
         }
 
         .nav-btn.unlocked:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(214,51,132,0.4); }
-
         .nav-btn.active { background: linear-gradient(135deg, #d63384 0%, #a02560 100%); }
 
         /* Container */
@@ -129,9 +127,17 @@
         .game-card { background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align:center; }
         .game-card h3 { color: #d63384; margin-bottom: 1rem; }
 
-        /* Jigsaw Puzzle */
+        /* Jigsaw Puzzle (local image) */
         .puzzle-container { display: grid; gap: 2px; max-width: 400px; margin: 1rem auto; background: #ddd; padding: 2px; border-radius: 10px; grid-template-columns: repeat(3, 1fr); }
-        .puzzle-piece { aspect-ratio: 1; cursor: pointer; transition: all 0.2s; border-radius: 5px; background-size: 300% 300%; background-image: url('https://via.placeholder.com/900x1599/ffd6e8/ffffff?text=Our+Memory'); }
+        .puzzle-piece {
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 5px;
+            background-image: url('./puzzle.jpg'); /* <-- local image: place puzzle.jpg same folder as this HTML */
+            background-size: 300% 300%; /* needed so 3x3 pieces show correct crop */
+            background-repeat: no-repeat;
+        }
         .puzzle-piece:hover { opacity: 0.9; transform: scale(0.99); }
         .puzzle-piece.selected { border: 3px solid #d63384; }
 
@@ -257,6 +263,9 @@
                     <div class="puzzle-container" id="puzzleContainer"></div>
                     <div style="margin-top:12px;">
                         <button class="btn btn-primary" onclick="shufflePuzzle()">Shuffle</button>
+                    </div>
+                    <div style="margin-top:12px; font-size:0.9rem; color:#6b4a5a;">
+                        Note: Put your 9:16 image file named <strong>puzzle.jpg</strong> in the same folder as this HTML file.
                     </div>
                 </div>
 
@@ -750,11 +759,10 @@
         function shufflePuzzle() {
             const container = document.getElementById('puzzleContainer');
             const pieces = Array.from(container.children);
-            // Fisher-Yates shuffle on an array of nodes: detach and reappend
+            // Fisher-Yates shuffle on DOM nodes
             for (let i = pieces.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 if (i !== j) {
-                    // swap DOM nodes
                     const nodeA = pieces[i];
                     const nodeB = pieces[j];
                     const placeholder = document.createElement('div');
